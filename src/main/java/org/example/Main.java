@@ -16,16 +16,6 @@ public class Main {
 
 
     public static void main(String[] args) {
-        //todo all of these methods and test are for student{
-        //  System.out.println("welcome to the university portal");
-        // registerStudent (getting data from admin for student )
-        // saveStudent(new Name("hamideh", "yay"), "7880", "5689", "+989125697478", "hamideh@gmail.com", "1111111111", "1154");
-        //  System.out.println(studentService.findById(1L));
-        //todo studentService.findAll().forEach(System.out::println);
-        // updateStudent();
-        // getStudentById(1L);}
-        //todo studentService.deleteStudent(1L);
-
 
     }
 
@@ -35,27 +25,27 @@ public class Main {
         studentService.save(student);
     }
 
-//    public static Student registerStudent() {
-//        System.out.println("Add new Student");
-//        Name name = new Name();
-//        System.out.println("please enter firstname");
-//        name.setFirstName(sc.nextLine());
-//        System.out.println("please enter lastname");
-//        name.setLastName(sc.nextLine());
-//        System.out.println("please enter password");
-//        String password = sc.nextLine();
-//        System.out.println("please enter phoneNumber");
-//        String phoneNumber = sc.nextLine();
-//        System.out.println("please enter email");
-//        String email = sc.nextLine();
-//        System.out.println("please enter userName");
-//        String userName = sc.nextLine();
-//        System.out.println("please enter nationalCode");
-//        String nationalCode = sc.nextLine();
-//        System.out.println("please enter StudentNumber");
-//        String StudentNumber = sc.nextLine();
-//        return new Student(name, userName, password, phoneNumber, email, nationalCode, StudentNumber);
-//    }
+    public static Student registerStudent() {
+        System.out.println("Add new Student");
+        Name name = new Name();
+        System.out.println("please enter firstname");
+        name.setFirstName(sc.nextLine());
+        System.out.println("please enter lastname");
+        name.setLastName(sc.nextLine());
+        System.out.println("please enter password");
+        String password = sc.nextLine();
+        System.out.println("please enter phoneNumber");
+        String phoneNumber = sc.nextLine();
+        System.out.println("please enter email");
+        String email = sc.nextLine();
+        System.out.println("please enter userName");
+        String userName = sc.nextLine();
+        System.out.println("please enter nationalCode");
+        String nationalCode = sc.nextLine();
+        System.out.println("please enter StudentNumber");
+        String StudentNumber = sc.nextLine();
+        return new Student(name, userName, password, phoneNumber, email, nationalCode, StudentNumber);
+    }
 
     public static void updateStudent() {
         Validation<Student> studentValidation = new Validation<>();

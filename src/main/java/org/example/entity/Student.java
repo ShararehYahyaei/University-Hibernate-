@@ -28,7 +28,6 @@ public class Student {
     @NotNull(message = "PhoneNumber must not be null")
     @Pattern(regexp = "\\+98\\d{9,10}", message = "Phone number must start with +98 and contain 9 to 10 digits after it")
     private String phoneNumber;
-    @NotNull(message = "Last name must not be null")
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$", message = "Email must end with @gmail.com")
     @NotNull(message = "Email must not be null")
     private String email;
@@ -52,17 +51,15 @@ public class Student {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Student{");
-        sb.append("id=").append(id)
-                .append(", name=").append(name)
-                .append(", userName='").append(userName).append('\'')
-                .append(", password='").append(password).append('\'')
-                .append(", phoneNumber='").append(phoneNumber).append('\'')
-                .append(", email='").append(email).append('\'')
-                .append(", nationalCode='").append(nationalCode).append('\'')
-                .append(", studentNumber='").append(studentNumber).append('\'')
-                .append('}');
-        return sb.toString();
+        return "Student{" + "id=" + id +
+                ", name=" + name +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", nationalCode='" + nationalCode + '\'' +
+                ", studentNumber='" + studentNumber + '\'' +
+                '}';
     }
 
 }

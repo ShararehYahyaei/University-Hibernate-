@@ -12,7 +12,7 @@ public class SessionFactoryInstance {
         sessionFactory = new Configuration()
                 .configure("hibernate.cfg.xml")
              .addAnnotatedClass(Student.class)
-               // .addAnnotatedClass(Teacher.class)
+                .addAnnotatedClass(Teacher.class)
                 .buildSessionFactory();
 
     }

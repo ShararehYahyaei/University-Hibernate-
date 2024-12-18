@@ -5,18 +5,25 @@ import org.example.entity.Student;
 import org.example.entity.Teacher;
 import org.example.repository.StudentRepo;
 import org.example.repository.TeacherRepo;
+import org.example.util.Validation;
 
 import java.util.List;
 import java.util.Optional;
 
 public class TeacherService {
-  /*  private final static TeacherRepo teacherRepo = new TeacherRepo();
+    private final static TeacherRepo teacherRepo = new TeacherRepo();
 
-    public Teacher saveTeacher(Teacher teacher) {
+    public  Teacher saveTeacher(Teacher teacher) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                teacherRepo.saveSTeacher(session, teacher);
+                Validation<Teacher> studentValidation = new Validation<>();
+                if (studentValidation.valid(teacher).isEmpty()) {
+                    teacherRepo.saveSTeacher(session, teacher);
+                } else {
+                    studentValidation.valid(teacher).forEach(System.out::println);
+                }
+
                 session.getTransaction().commit();
                 return teacher;
             } catch (Exception e) {
@@ -25,47 +32,44 @@ public class TeacherService {
             }
         }
     }
-    public Teacher update(Student student) {
+    public Teacher update(Teacher teacher) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                Student newStudent = teacherRepo.findById(session, Teacher.getId())
-                        .orElseThrow(() -> new RuntimeException("Student not found"));
-                newStudent.setName(student.getName());
-                newStudent.setUserName(student.getUserName());
-                newStudent.setEmail(student.getEmail());
-                newStudent.setPhoneNumber(student.getPhoneNumber());
-                newStudent.setPassword(student.getPassword());
-                newStudent.setNationalCode(student.getNationalCode());
-                newStudent.setStudentNumber(student.getStudentNumber());
+                Validation<Teacher> studentValidation = new Validation<>();
+                if (studentValidation.valid(teacher).isEmpty()) {
+                    teacherRepo.saveSTeacher(session, teacher);
+                } else {
+                    studentValidation.valid(teacher).forEach(System.out::println);
+                }
                 session.getTransaction().commit();
-                return newStudent;
+                return teacher;
             } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);
             }
         }
     }
-    public Optional<Student> findById(Long id) {
+    public Optional<Teacher>  findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                Optional<Student>student= studentRepo.findById(session, id);
+                Optional<Teacher>teacher= teacherRepo.findById(session, id);
                 session.getTransaction().commit();
-                return student;
+                return teacher;
             } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);
             }
         }
     }
-    public List<Student> findAll() {
+    public List<Teacher> findAll() {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                List<Student> phoneBooks = studentRepo.getAllPhoneBook(session);
+                List<Teacher> teachers = teacherRepo.getAllPhoneBook(session);
                 session.getTransaction().commit();
-                return phoneBooks;
+                return teachers;
 
             } catch (Exception e) {
                 session.getTransaction().rollback();
@@ -77,7 +81,7 @@ public class TeacherService {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try{
                 session.beginTransaction();
-                studentRepo.deleteById(session, id);
+                teacherRepo.deleteById(session, id);
                 session.getTransaction().commit();
                 return "Delete Successfully ...";
 
@@ -88,6 +92,5 @@ public class TeacherService {
         }
 
     }
-*/
 
 }
