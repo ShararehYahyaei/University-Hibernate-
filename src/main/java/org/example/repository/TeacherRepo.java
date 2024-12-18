@@ -21,9 +21,6 @@ public class TeacherRepo {
                 .executeUpdate();
     }
 
-    public void update(Session session, Teacher teacher) {
-        session.persist(teacher);
-    }
 
     public Teacher findById(Session session, Long id) {
         return session.get(Teacher.class, id);
