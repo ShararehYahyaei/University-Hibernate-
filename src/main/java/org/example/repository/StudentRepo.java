@@ -1,10 +1,7 @@
 package org.example.repository;
 
 import org.example.entity.Student;
-import org.example.entity.Teacher;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +20,6 @@ public class StudentRepo {
                 .executeUpdate();
     }
 
-    public void update(Session session, Student student) {
-        session.persist(student);
-    }
 
     public Optional<Student> findById(Session session, Long id) {
         return session.byId(Student.class).loadOptional(id);

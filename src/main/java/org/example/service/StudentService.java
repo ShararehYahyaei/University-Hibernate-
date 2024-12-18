@@ -4,6 +4,7 @@ package org.example.service;
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.Student;
 import org.example.repository.StudentRepo;
+import org.example.util.Validation;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +16,13 @@ public class StudentService {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                studentRepo.saveStudent(session, student);
+                Validation<Student> studentValidation = new Validation<>();
+                if (studentValidation.valid(student).isEmpty()) {
+                    studentRepo.saveStudent(session, student);
+                } else {
+                    studentValidation.valid(student).forEach(System.out::println);
+                }
+
                 session.getTransaction().commit();
                 return student;
             } catch (Exception e) {
@@ -28,17 +35,14 @@ public class StudentService {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                Student newStudent = studentRepo.findById(session, student.getId())
-                        .orElseThrow(() -> new RuntimeException("Student not found"));
-                newStudent.setName(student.getName());
-                newStudent.setUserName(student.getUserName());
-                newStudent.setEmail(student.getEmail());
-                newStudent.setPhoneNumber(student.getPhoneNumber());
-                newStudent.setPassword(student.getPassword());
-                newStudent.setNationalCode(student.getNationalCode());
-                newStudent.setStudentNumber(student.getStudentNumber());
+                Validation<Student> studentValidation = new Validation<>();
+                if (studentValidation.valid(student).isEmpty()) {
+                 studentRepo.saveStudent(session, student);
+                } else {
+                    studentValidation.valid(student).forEach(System.out::println);
+                }
                 session.getTransaction().commit();
-                return newStudent;
+                return student;
             } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);

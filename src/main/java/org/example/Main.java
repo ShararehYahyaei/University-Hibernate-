@@ -16,24 +16,23 @@ public class Main {
 
 
     public static void main(String[] args) {
+        //todo all of these methods and test are for student{
         //  System.out.println("welcome to the university portal");
         // registerStudent (getting data from admin for student )
         // saveStudent(new Name("hamideh", "yay"), "7880", "5689", "+989125697478", "hamideh@gmail.com", "1111111111", "1154");
         //  System.out.println(studentService.findById(1L));
-       // studentService.findAll().forEach(System.out::println);
-       // updateStudent();
-       // getStudentById(1L);
+        //todo studentService.findAll().forEach(System.out::println);
+        // updateStudent();
+        // getStudentById(1L);}
+        //todo studentService.deleteStudent(1L);
+
+
     }
 
     private static void saveStudent(Name name, String userName, String password,
                                     String phoneNumber, String email, String nationalCode, String StudentNumber) {
-        Validation<Student> studentValidation = new Validation<>();
         Student student = new Student(name, userName, password, phoneNumber, email, nationalCode, StudentNumber);
-        if (studentValidation.valid(student).isEmpty()) {
-            studentService.save(student);
-        } else {
-            studentValidation.valid(student).forEach(System.out::println);
-        }
+        studentService.save(student);
     }
 
 //    public static Student registerStudent() {
@@ -106,10 +105,15 @@ public class Main {
         student.get();
     }
 
-    public static void getAllStudents(){
+    public static void getAllStudents() {
         studentService.findAll().forEach(System.out::println);
     }
-    public  static void getStudentById(Long id){
+
+    public static void getStudentById(Long id) {
         studentService.findById(id).ifPresent(System.out::println);
+    }
+
+    public void deleteStudentBYId(Long id) {
+        studentService.deleteStudent(1L);
     }
 }
