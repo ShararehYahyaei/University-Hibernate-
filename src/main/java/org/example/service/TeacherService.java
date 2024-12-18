@@ -4,9 +4,8 @@ import org.example.config.SessionFactoryInstance;
 import org.example.entity.Teacher;
 import org.example.repository.TeacherRepo;
 import org.example.util.Validation;
-
 import java.util.List;
-import java.util.Optional;
+
 
 public class TeacherService {
     private final static TeacherRepo teacherRepo = new TeacherRepo();

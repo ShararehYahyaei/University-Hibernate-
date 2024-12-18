@@ -17,13 +17,21 @@ import java.time.format.DateTimeFormatter;
 public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     @Column(nullable = false)
     @NotNull(message = "CourseName must not be null")
     private String courseName;
     @Column(nullable = false)
     @NotNull(message = "Credit must not be null")
     private int credit;
+
+    public Lesson(String courseName, int credit, int capacity, String startDate) {
+        this.courseName = courseName;
+        this.credit = credit;
+        this.capacity = capacity;
+        this.startDate = startDate;
+    }
+
     @Column(nullable = false)
     @NotNull(message = "Capacity must not be null")
     private int capacity;

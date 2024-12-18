@@ -56,7 +56,7 @@ class TeacherServiceTest {
     }
 
     @Test
-    void deleteStudent() {
+    void deleteTeacher() {
         Name name = new Name();
         name.setFirstName("reza");
         name.setLastName("yahyaee");
@@ -65,7 +65,7 @@ class TeacherServiceTest {
                 "mohandes", "diplom", "12");
         Teacher reasultTeacher = teacherService.saveTeacher(teacher);
         teacherService.deleteTeacher(reasultTeacher.getId());
-        assertEquals(Optional.empty(), teacherService.findById(reasultTeacher.getId()));
+        assertNull(teacherService.findById(reasultTeacher.getId()));
     }
 
     private void clearDatabase(Long id) {

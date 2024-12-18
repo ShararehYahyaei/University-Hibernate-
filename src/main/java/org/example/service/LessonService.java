@@ -10,7 +10,7 @@ import java.util.List;
 public class LessonService {
     private final static LessonRepo lessonRepo = new LessonRepo();
 
-    public Lesson save(Lesson Lesson) {
+    public Lesson saveLesson(Lesson Lesson) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
@@ -20,7 +20,6 @@ public class LessonService {
                 } else {
                     studentValidation.valid(Lesson).forEach(System.out::println);
                 }
-
                 session.getTransaction().commit();
                 return Lesson;
             } catch (Exception e) {
@@ -77,7 +76,7 @@ public class LessonService {
         }
     }
 
-    public String deleteStudent(Long id) {
+    public String deleteLesson(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();

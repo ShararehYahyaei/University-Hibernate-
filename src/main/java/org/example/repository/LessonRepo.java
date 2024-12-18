@@ -15,7 +15,7 @@ public class LessonRepo {
 
     public int deleteById(Session session, Long id) {
         return session.createMutationQuery(
-                        "DELETE FROM org.example.entity.Lesson l WHERE l.id = :id"
+                        "DELETE FROM Lesson l WHERE l.id = :id"
                 )
                 .setParameter("id", id)
                 .executeUpdate();
