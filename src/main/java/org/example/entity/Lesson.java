@@ -1,14 +1,14 @@
 package org.example.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import jakarta.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 
 @Entity
 @Data
@@ -18,10 +18,24 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(nullable = false)
+    @NotNull(message = "CourseName must not be null")
     private String courseName;
+    @Column(nullable = false)
+    @NotNull(message = "Credit must not be null")
     private int credit;
+    @Column(nullable = false)
+    @NotNull(message = "Capacity must not be null")
     private int capacity;
-    private int teacherId;
-    private LocalDate startDate;
+    @Column(nullable = false)
+    @NotNull(message = "StartDate must not be null.")
+    @Pattern(
+            regexp = "\\d{4}-\\d{2}-\\d{2}",
+            message = "StartDate must follow the format yyyy-MM-dd."
+    )
+    private String startDate;
+    public LocalDate getStartDateAsLocalDate() {
+        return LocalDate.parse(this.startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
 
 }

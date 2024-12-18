@@ -66,7 +66,7 @@ public class StudentService {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                List<Student> students = studentRepo.getAllPhoneBook(session);
+                List<Student> students = studentRepo.getAllStudents(session);
                 session.getTransaction().commit();
                 return students;
 

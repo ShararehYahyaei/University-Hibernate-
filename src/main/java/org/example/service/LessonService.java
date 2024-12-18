@@ -1,93 +1,95 @@
 package org.example.service;
 
 import org.example.config.SessionFactoryInstance;
-import org.example.entity.Teacher;
-import org.example.repository.TeacherRepo;
+import org.example.entity.Lesson;
+import org.example.repository.LessonRepo;
 import org.example.util.Validation;
-
 import java.util.List;
-import java.util.Optional;
 
-public class TeacherService {
-    private final static TeacherRepo teacherRepo = new TeacherRepo();
 
-    public  Teacher saveTeacher(Teacher teacher) {
+public class LessonService {
+    private final static LessonRepo lessonRepo = new LessonRepo();
+
+    public Lesson save(Lesson Lesson) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                Validation<Teacher> studentValidation = new Validation<>();
-                if (studentValidation.valid(teacher).isEmpty()) {
-                    teacherRepo.saveSTeacher(session, teacher);
+                Validation<Lesson> studentValidation = new Validation<>();
+                if (studentValidation.valid(Lesson).isEmpty()) {
+                    lessonRepo.saveLesson(session, Lesson);
                 } else {
-                    studentValidation.valid(teacher).forEach(System.out::println);
+                    studentValidation.valid(Lesson).forEach(System.out::println);
+                }
+
+                session.getTransaction().commit();
+                return Lesson;
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public Lesson update(Lesson lesson) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                Validation<Lesson> studentValidation = new Validation<>();
+                if (studentValidation.valid(lesson).isEmpty()) {
+                    lessonRepo.saveLesson(session, lesson);
+                } else {
+                    studentValidation.valid(lesson).forEach(System.out::println);
                 }
                 session.getTransaction().commit();
-                return teacher;
+                return lesson;
             } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);
             }
         }
     }
-    public Teacher update(Teacher teacher) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-                Validation<Teacher> studentValidation = new Validation<>();
-                if (studentValidation.valid(teacher).isEmpty()) {
-                    teacherRepo.saveSTeacher(session, teacher);
-                } else {
-                    studentValidation.valid(teacher).forEach(System.out::println);
-                }
-                session.getTransaction().commit();
-                return teacher;
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                throw new RuntimeException(e);
-            }
-        }
-    }
-    public  Teacher findById(Long id) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-              Teacher teacher= teacherRepo.findById(session, id);
-                session.getTransaction().commit();
-                return teacher;
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                throw new RuntimeException(e);
-            }
-        }
-    }
-    public List<Teacher> findAll() {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-                List<Teacher> teachers = teacherRepo.getAllTeachers(session);
-                session.getTransaction().commit();
-                return teachers;
 
+    public Lesson findById(Long id) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                Lesson lesson = lessonRepo.findById(session, id);
+                session.getTransaction().commit();
+                return lesson;
             } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);
             }
         }
     }
-    public String deleteTeacher(Long id){
+
+    public List<Lesson> findAll() {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try{
+            try {
                 session.beginTransaction();
-                teacherRepo.deleteById(session, id);
+                List<Lesson> lessons = lessonRepo.getAllLessons(session);
+                session.getTransaction().commit();
+                return lessons;
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public String deleteStudent(Long id) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                lessonRepo.deleteById(session, id);
                 session.getTransaction().commit();
                 return "Delete Successfully ...";
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);
             }
         }
 
     }
-
 }

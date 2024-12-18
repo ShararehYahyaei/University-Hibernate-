@@ -1,5 +1,6 @@
 package org.example.config;
 
+import org.example.entity.Lesson;
 import org.example.entity.Student;
 import org.example.entity.Teacher;
 import org.hibernate.cfg.Configuration;
@@ -13,6 +14,7 @@ public class SessionFactoryInstance {
                 .configure("hibernate.cfg.xml")
              .addAnnotatedClass(Student.class)
                 .addAnnotatedClass(Teacher.class)
+                .addAnnotatedClass(Lesson.class)
                 .buildSessionFactory();
 
     }

@@ -26,7 +26,7 @@ public class StudentRepo {
 
     }
 
-    public List<Student> getAllPhoneBook(Session session) {
+    public List<Student> getAllStudents(Session session) {
         return (List<Student>) session.createQuery("from Student").list();
     }
 
