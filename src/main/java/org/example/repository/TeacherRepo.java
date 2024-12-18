@@ -25,8 +25,8 @@ public class TeacherRepo {
         session.persist(teacher);
     }
 
-    public Optional<Teacher> findById(Session session, Long id) {
-        return session.byId(Teacher.class).loadOptional(id);
+    public Teacher findById(Session session, Long id) {
+        return session.get(Teacher.class, id);
 
     }
 

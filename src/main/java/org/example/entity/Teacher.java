@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     @Embedded
-    private String name;
+    private Name name;
     @Column(nullable = false)
     @NotNull(message = "UserName must not be null")
     private String userName;
@@ -42,7 +42,7 @@ public class Teacher {
     @NotNull(message = "Employee Code must not be null")
     private String employeeCode;
 
-    public Teacher(String name, String userName, String password, String phoneNumber, String email, String nationalCode, String specialty, String degree, String employeeCode) {
+    public Teacher(Name name, String userName, String password, String phoneNumber, String email, String nationalCode, String specialty, String degree, String employeeCode) {
         this.name = name;
         this.userName = userName;
         this.password = password;

@@ -1,9 +1,7 @@
 package org.example.service;
 
 import org.example.config.SessionFactoryInstance;
-import org.example.entity.Student;
 import org.example.entity.Teacher;
-import org.example.repository.StudentRepo;
 import org.example.repository.TeacherRepo;
 import org.example.util.Validation;
 
@@ -23,7 +21,6 @@ public class TeacherService {
                 } else {
                     studentValidation.valid(teacher).forEach(System.out::println);
                 }
-
                 session.getTransaction().commit();
                 return teacher;
             } catch (Exception e) {
@@ -50,11 +47,11 @@ public class TeacherService {
             }
         }
     }
-    public Optional<Teacher>  findById(Long id) {
+    public  Teacher findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                Optional<Teacher>teacher= teacherRepo.findById(session, id);
+              Teacher teacher= teacherRepo.findById(session, id);
                 session.getTransaction().commit();
                 return teacher;
             } catch (Exception e) {
@@ -77,7 +74,7 @@ public class TeacherService {
             }
         }
     }
-    public String deleteStudent(Long id){
+    public String deleteTeacher(Long id){
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try{
                 session.beginTransaction();
