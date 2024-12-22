@@ -19,7 +19,7 @@ class TeacherServiceTest {
         Teacher teacher = new Teacher( "mohandes", "diplom", "12",user);
         Teacher resultTeacher = teacherService.saveTeacher(teacher);
         assertEquals(teacher, resultTeacher);
-      //  clearDatabase(resultTeacher.getId());
+       clearDatabase(resultTeacher.getId());
 
     }
 

@@ -19,7 +19,7 @@ class StudentServiceTest {
         name.setLastName("Yahayei");
         User user = new User(name,"hadi", "5699", Type.Student, "4578", "ha@gmail.com", "2222");
         Student student = new Student( "4545", user);
-        Student resultStudent = studentService.save(student);
+        Student resultStudent = studentService.saveStudent(student);
         studentService.deleteStudent(1L);
         assertNull(studentService.findById(resultStudent.getId()));
 
@@ -33,7 +33,7 @@ class StudentServiceTest {
         User user = new User(name,"hadi", "5699", Type.Student, "4578", "ha@gmail.com", "2222");
         Student student = new Student( "4545", user);
         student.getUser().setEmail("ssssss@gmail.com");
-        Student resultStudent = studentService.save(student);
+        Student resultStudent = studentService.saveStudent(student);
         assertEquals(resultStudent.getUser().getEmail(), "ssssss@gmail.com");
       clearDatabase(resultStudent.getId());
 
@@ -45,11 +45,11 @@ class StudentServiceTest {
         Name name = new Name();
         name.setFirstName("reza");
         name.setLastName("Yahayei");
-        User user = new User(name,"hadi", "5699", Type.Student, "4578", "ha@gmail.com", "2222");
+        User user = new User(name,"hadi", "5699", Type.Student, "+989125478998", "ha@gmail.com", "2222");
         Student student = new Student("4545", user);
-        Student resultStudent = studentService.save(student);
+        Student resultStudent = studentService.saveStudent(student);
         assertEquals(student, resultStudent);
-       // clearDatabase(resultStudent.getId());
+      clearDatabase(resultStudent.getId());
     }
 
     private void clearDatabase(Long id) {

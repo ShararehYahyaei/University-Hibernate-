@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import org.example.entity.Student;
 import org.example.entity.Teacher;
 import org.hibernate.Session;
 
@@ -10,12 +11,8 @@ public class TeacherRepo {
         session.persist(teacher);
     }
 
-    public int deleteById(Session session, Long id) {
-        return session.createMutationQuery(
-                        "DELETE FROM org.example.entity.Teacher t WHERE t.id = :id"
-                )
-                .setParameter("id", id)
-                .executeUpdate();
+    public void deleteByEntity(Session session, Teacher teacher) {
+        session.remove(teacher);
     }
 
 

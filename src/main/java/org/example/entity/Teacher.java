@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.List;
 
@@ -27,10 +29,10 @@ public class Teacher {
     @NotNull(message = "Employee Code must not be null")
     private String employeeCode;
     @OneToOne
+    @Cascade({org.hibernate.annotations.CascadeType.REMOVE, CascadeType.PERSIST})
     private User user;
 
     public Teacher(String specialty, String degree, String employeeCode,User user) {
-
         this.specialty = specialty;
         this.degree = degree;
         this.employeeCode = employeeCode;

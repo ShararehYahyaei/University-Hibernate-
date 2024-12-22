@@ -12,9 +12,8 @@ import java.util.List;
 
 public class StudentService {
     private final static StudentRepo studentRepo = new StudentRepo();
-    private final static UserRepo userrepo = new UserRepo();
 
-    public void saveStudent(Student student) {
+    public Student saveStudent(Student student) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
@@ -22,17 +21,21 @@ public class StudentService {
                 Validation<Student> studentValidation = new Validation<>();
                 if (!userValidation.valid(student.getUser()).isEmpty()) {
                     userValidation.valid(student.getUser()).forEach(System.out::println);
+                    return null;
                 }
                 if (!studentValidation.valid(student).isEmpty()) {
                     studentValidation.valid(student).forEach(System.out::println);
+                    return null;
                 } else {
                      studentRepo.saveStudent(session, student);
+                     return student;
                 }
             } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);
             }
         }
+
     }
 
     public Student findById(Long id) {
