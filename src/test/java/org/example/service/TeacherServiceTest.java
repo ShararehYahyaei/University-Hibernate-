@@ -22,7 +22,17 @@ class TeacherServiceTest {
        clearDatabase(resultTeacher.getId());
 
     }
-
+    @Test
+    void saveTeacherRes() {
+        Name name = new Name();
+        name.setFirstName("reza");
+        name.setLastName("Yahayei");
+        User user = new User(name,"hadi", "5699", Type.Student, "925478998", "ha@gmail.com", "2222");
+        Teacher teacher = new Teacher( "mohandes", "diplom", "12",user);
+        Teacher resultStudent = teacherService.saveTeacher(teacher);
+        assertNull(resultStudent);
+        // clearDatabase(resultStudent.getId());
+    }
 //    @Test
 //    void update() {
 //        Name name = new Name();

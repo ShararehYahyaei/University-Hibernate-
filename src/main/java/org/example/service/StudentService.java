@@ -8,7 +8,9 @@ import org.example.repository.StudentRepo;
 import org.example.repository.UserRepo;
 import org.example.util.Validation;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class StudentService {
     private final static StudentRepo studentRepo = new StudentRepo();
@@ -19,17 +21,14 @@ public class StudentService {
                 session.beginTransaction();
                 Validation<User> userValidation = new Validation<>();
                 Validation<Student> studentValidation = new Validation<>();
-                if (!userValidation.valid(student.getUser()).isEmpty()) {
-                    userValidation.valid(student.getUser()).forEach(System.out::println);
+                Set<String> validationUser = userValidation.valid(student.getUser());
+                validationUser.addAll(studentValidation.valid(student));
+                if (!validationUser.isEmpty()) {
+                    validationUser.forEach(System.out::println);
                     return null;
                 }
-                if (!studentValidation.valid(student).isEmpty()) {
-                    studentValidation.valid(student).forEach(System.out::println);
-                    return null;
-                } else {
-                     studentRepo.saveStudent(session, student);
-                     return student;
-                }
+                studentRepo.saveStudent(session, student);
+                return student;
             } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);

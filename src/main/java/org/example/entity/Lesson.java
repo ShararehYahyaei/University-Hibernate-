@@ -49,7 +49,7 @@ public class Lesson {
     public LocalDate getStartDateAsLocalDate() {
         return LocalDate.parse(this.startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
-    @ManyToMany(mappedBy = "lesson")
+    @ManyToMany
     private List<Teacher> teacher;
     @ManyToMany
     private List<Student> students ;

@@ -49,10 +49,21 @@ class StudentServiceTest {
         Student student = new Student("4545", user);
         Student resultStudent = studentService.saveStudent(student);
         assertEquals(student, resultStudent);
-      clearDatabase(resultStudent.getId());
+    //  clearDatabase(resultStudent.getId());
     }
 
     private void clearDatabase(Long id) {
         studentService.deleteStudent(id);
+    }
+    @Test
+    void saveStudentRes() {
+        Name name = new Name();
+        name.setFirstName("reza");
+        name.setLastName("Yahayei");
+        User user = new User(name,"hadi", "5699", Type.Student, "9125478998", "ha@gmail.com", "2222");
+        Student student = new Student("4545", user);
+        Student resultStudent = studentService.saveStudent(student);
+        assertNull(resultStudent);
+       // clearDatabase(resultStudent.getId());
     }
 }

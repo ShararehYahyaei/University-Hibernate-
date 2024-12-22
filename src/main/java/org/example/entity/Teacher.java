@@ -39,7 +39,7 @@ public class Teacher {
         this.user = user;
     }
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "teacher")
     private List<Lesson> lesson;
 
     @Override

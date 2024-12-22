@@ -7,28 +7,26 @@ import org.example.entity.User;
 import org.example.repository.TeacherRepo;
 import org.example.util.Validation;
 import java.util.List;
+import java.util.Set;
 
 
 public class TeacherService {
     private final static TeacherRepo teacherRepo = new TeacherRepo();
 
-    public Teacher saveTeacher(Teacher teacher) {
+    public Teacher saveStudent(Teacher teacher) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
                 Validation<User> userValidation = new Validation<>();
-                Validation<Teacher> teacherValidation = new Validation<>();
-                if (!userValidation.valid(teacher.getUser()).isEmpty()) {
-                    userValidation.valid(teacher.getUser()).forEach(System.out::println);
+                Validation<Teacher> studentValidation = new Validation<>();
+                Set<String> validationUser = userValidation.valid(teacher.getUser());
+                validationUser.addAll(studentValidation.valid(teacher));
+                if (!validationUser.isEmpty()) {
+                    validationUser.forEach(System.out::println);
                     return null;
                 }
-                if (!teacherValidation.valid(teacher).isEmpty()) {
-                    teacherValidation.valid(teacher).forEach(System.out::println);
-                    return null;
-                } else {
-                    teacherRepo.saveSTeacher(session, teacher);
-                    return teacher;
-                }
+                teacherRepo.saveSTeacher(session, teacher);
+                return teacher;
             } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);
@@ -36,7 +34,6 @@ public class TeacherService {
         }
 
     }
-
     public  Teacher findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {

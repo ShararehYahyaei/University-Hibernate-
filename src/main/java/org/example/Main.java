@@ -128,4 +128,10 @@ public class Main {
         Teacher teacher = new Teacher(speciality, degree, employeeCode, user);
         teacherService.saveTeacher(teacher);
     }
+
+    public void getAllTeachers(){
+
+
+        teacherService.findAll();
+    }
 }
