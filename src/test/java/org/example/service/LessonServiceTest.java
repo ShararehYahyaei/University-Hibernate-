@@ -12,15 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class LessonServiceTest {
 
-
     LessonService lessonService = new LessonService();
 
     @Test
     void saveLesson() {
-        Lesson lesson = new Lesson("math", 10, 20, "2024-12-18");
+        Lesson lesson = new Lesson("math", 10, 20, "2024-11-15");
         Lesson res = lessonService.saveLesson(lesson);
         assertEquals(res, lesson);
-        clearDatabase(lesson.getId());
+        //   clearDatabase(lesson.getId());
 
     }
 
@@ -45,5 +44,6 @@ class LessonServiceTest {
     private void clearDatabase(Long id) {
         lessonService.deleteLesson(id);
     }
+
 
 }

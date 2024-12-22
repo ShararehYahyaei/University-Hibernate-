@@ -17,32 +17,32 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Student  {
+public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long  id;
-    @Embedded
-    private Name name;
+    private Long id;
+
     @Column(nullable = false)
     @NotNull(message = "StudentNumber must not be null")
     private String studentNumber;
     @OneToOne
     @Cascade({CascadeType.REMOVE, CascadeType.PERSIST})
     private User user;
-    @ManyToMany(mappedBy = "students" )
+    @ManyToMany(mappedBy = "students")
     List<Lesson> lessons;
+
     @Override
     public String toString() {
         return "Student{" + "id=" + id +
-                ", name=" + name +
                 ", studentNumber='" + studentNumber + '\'' +
                 '}';
     }
 
-    public Student(Name name, String studentNumber, User user) {
-        this.name = name;
+    public Student(String studentNumber, User user) {
+
         this.studentNumber = studentNumber;
         this.user = user;
 
     }
+
 }

@@ -24,9 +24,6 @@ public class StudentService {
                 session.beginTransaction();
                 Validation<Student> studentValidation = new Validation<>();
                 if (studentValidation.valid(student).isEmpty()) {
-                    User user = student.getUser();
-                    //   User userResult= userrepo.saveUser(session,user);
-                    //   student.setUser(userResult);
                     studentRepo.saveStudent(session, student);
                 } else {
                     studentValidation.valid(student).forEach(System.out::println);
@@ -40,16 +37,11 @@ public class StudentService {
             }
         }
     }
-
-    public Student update(Student student) {
-        return getStudent(student);
-    }
-
     public Student findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-              Student student = studentRepo.findById(session, id);
+                Student student = studentRepo.findById(session, id);
                 session.getTransaction().commit();
                 return student;
             } catch (Exception e) {
@@ -79,7 +71,7 @@ public class StudentService {
             try {
                 session.beginTransaction();
                 Student student = studentRepo.findById(session, id);
-                studentRepo.deleteByEntity(session,student);
+                studentRepo.deleteByEntity(session, student);
                 session.getTransaction().commit();
 
             } catch (Exception e) {

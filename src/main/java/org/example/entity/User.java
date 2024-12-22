@@ -16,7 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    public User(String userName, String password, Type type, String phoneNumber, String email, String nationalCode) {
+    public User(Name name,String userName, String password, Type type, String phoneNumber, String email, String nationalCode) {
+        this.name = name;
         this.userName = userName;
         this.password = password;
         this.type = type;
@@ -31,6 +32,8 @@ public class User {
     @Column(nullable = false)
     @NotNull(message = "UserName must not be null")
     private String userName;
+    @Embedded
+    private Name name;
     @Column(nullable = false)
     @NotNull(message = "Password must not be null")
     private String password;

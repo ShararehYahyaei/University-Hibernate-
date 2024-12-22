@@ -2,7 +2,10 @@ package org.example;
 
 import org.example.entity.*;
 import org.example.service.StudentService;
+import org.example.service.UserService;
 import org.example.util.Validation;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -11,6 +14,7 @@ import java.util.Scanner;
 public class Main {
     static Scanner sc = new Scanner(System.in);
     static StudentService studentService = new StudentService();
+    static UserService userService = new UserService();
 
 
     public static void main(String[] args) {
@@ -19,7 +23,7 @@ public class Main {
     }
 
     private static void saveStudent(Student student) {
-     studentService.save(student);
+        studentService.save(student);
     }
 
     public static Student registerStudent() {
@@ -41,62 +45,46 @@ public class Main {
         String nationalCode = sc.nextLine();
         System.out.println("please enter StudentNumber");
         String studentNumber = sc.nextLine();
-        User user = new User(userName,password, Type.Student,phoneNumber,email,nationalCode);
-        return new Student(name,studentNumber,user);
+        User user = new User(name,userName, password, Type.Student, phoneNumber, email, nationalCode);
+        return new Student( studentNumber, user);
     }
 
-//    public static void updateStudent() {
-//        Validation<Student> studentValidation = new Validation<>();
+    public static void updateStudent() {
+        List<Student> students = studentService.findAll();
+        for (Student student : students) {
+            System.out.println(student.getId());
+            System.out.println(student.getUser().getPhoneNumber());
+            System.out.println(student.getUser().getEmail());
+        }
+        System.out.println("please enter your Id :");
+        Long id = sc.nextLong();
+        Student student = studentService.findById(id);
+        System.out.println(student.getUser().getPhoneNumber());
+        System.out.println(student.getUser().getEmail());
+        System.out.println("which one do you like to change : ");
+        System.out.println(" 1- PhoneNumber");
+        System.out.println(" 2- Email");
+        String result = sc.nextLine();
+        switch (result) {
+            case "1":
+                System.out.println("please enter your new Phone Number :");
+                student.getUser().setPhoneNumber(sc.nextLine());
+                studentService.save(student);
+                break;
+            case "2":
+                System.out.println("please enter your new Email :");
+                student.getUser().setEmail(sc.nextLine());
+                studentService.save(student);
+                break;
+        }
+
+
+    }
+
+//    public static void getAllStudents() {
 //        studentService.findAll().forEach(System.out::println);
-//        System.out.println("Enter student id: ");
-//        Long studentId = sc.nextLong();
-//        sc.nextLine();
-//      Student student = studentService.findById(studentId);
-//        System.out.println("choose which so you want to update: phone number, email, password");
-//        System.out.println("1. phone number");
-//        System.out.println("2. email");
-//        System.out.println("3. password");
-//        String res = sc.nextLine();
-//        switch (res) {
-//            case "1":
-//                System.out.println("please enter phoneNumber");
-//                String phoneNumber = sc.nextLine();
-//              //  student.get().setPhoneNumber(phoneNumber);
-//                if (studentValidation.valid(student.get()).isEmpty()) {
-//                    studentService.update(student.get());
-//                } else {
-//                    studentValidation.valid(student.get()).forEach(System.out::println);
-//                }
-//                break;
-//            case "2":
-//                System.out.println("please enter email");
-//                String email = sc.nextLine();
-//               // student.get().setEmail(email);
-//                if (studentValidation.valid(student.get()).isEmpty()) {
-//                    studentService.update(student.get());
-//                } else {
-//                    studentValidation.valid(student.get()).forEach(System.out::println);
-//                }
-//                break;
-//            case "3":
-//                System.out.println("please enter password");
-//                String password = sc.nextLine();
-//             //   student.get().setPassword(password);
-//                if (studentValidation.valid(student.get()).isEmpty()) {
-//                    studentService.update(student.get());
-//                } else {
-//                    studentValidation.valid(student.get()).forEach(System.out::println);
-//                }
-//                break;
-//
-//        }
-//        student.get();
 //    }
-
-    public static void getAllStudents() {
-        studentService.findAll().forEach(System.out::println);
-    }
-//
+////
 //    public static void getStudentById(Long id) {
 //        studentService.findById(id).ifPresent(System.out::println);
 //    }

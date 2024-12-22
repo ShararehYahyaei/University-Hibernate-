@@ -27,7 +27,7 @@ public class LessonRepo {
     }
 
     public List<Lesson> getAllLessons(Session session) {
-        return (List<Lesson>) session.createQuery("from Lesson").list();
+        return session.createQuery("from Lesson",Lesson.class).list();
     }
 
 }

@@ -19,8 +19,6 @@ public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Embedded
-    private Name name;
     private String specialty;
     @Column(nullable = false)
     @NotNull(message = "Degree must not be null")
@@ -31,8 +29,8 @@ public class Teacher {
     @OneToOne
     private User user;
 
-    public Teacher(Name name, String specialty, String degree, String employeeCode) {
-        this.name = name;
+    public Teacher(String specialty, String degree, String employeeCode) {
+
         this.specialty = specialty;
         this.degree = degree;
         this.employeeCode = employeeCode;
@@ -45,7 +43,6 @@ public class Teacher {
     public String toString() {
         return "Teacher{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
                 ", specialty='" + specialty + '\'' +
                 ", degree='" + degree + '\'' +
                 ", employeeCode='" + employeeCode + '\'' +
