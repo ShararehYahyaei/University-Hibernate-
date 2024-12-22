@@ -11,6 +11,10 @@ public class TeacherService {
     private final static TeacherRepo teacherRepo = new TeacherRepo();
 
     public  Teacher saveTeacher(Teacher teacher) {
+        return getTeacher(teacher);
+    }
+
+    private Teacher getTeacher(Teacher teacher) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
@@ -28,23 +32,9 @@ public class TeacherService {
             }
         }
     }
+
     public Teacher update(Teacher teacher) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-                Validation<Teacher> studentValidation = new Validation<>();
-                if (studentValidation.valid(teacher).isEmpty()) {
-                    teacherRepo.saveSTeacher(session, teacher);
-                } else {
-                    studentValidation.valid(teacher).forEach(System.out::println);
-                }
-                session.getTransaction().commit();
-                return teacher;
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                throw new RuntimeException(e);
-            }
-        }
+        return getTeacher(teacher);
     }
     public  Teacher findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {

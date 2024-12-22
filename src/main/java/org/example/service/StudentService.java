@@ -3,7 +3,9 @@ package org.example.service;
 
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.Student;
+import org.example.entity.User;
 import org.example.repository.StudentRepo;
+import org.example.repository.UserRepo;
 import org.example.util.Validation;
 
 import java.util.List;
@@ -11,13 +13,21 @@ import java.util.Optional;
 
 public class StudentService {
     private final static StudentRepo studentRepo = new StudentRepo();
+    private final static UserRepo userrepo=new UserRepo();
 
     public  Student save(Student student) {
+        return getStudent(student);
+    }
+
+    private Student getStudent(Student student) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
                 Validation<Student> studentValidation = new Validation<>();
                 if (studentValidation.valid(student).isEmpty()) {
+                    User user=student .getUser();
+                   User userResult= userrepo.saveUser(session,user);
+                   student.setUser(userResult);
                     studentRepo.saveStudent(session, student);
                 } else {
                     studentValidation.valid(student).forEach(System.out::println);
@@ -31,23 +41,9 @@ public class StudentService {
             }
         }
     }
+
     public Student update(Student student) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-                Validation<Student> studentValidation = new Validation<>();
-                if (studentValidation.valid(student).isEmpty()) {
-                 studentRepo.saveStudent(session, student);
-                } else {
-                    studentValidation.valid(student).forEach(System.out::println);
-                }
-                session.getTransaction().commit();
-                return student;
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                throw new RuntimeException(e);
-            }
-        }
+        return getStudent(student);
     }
     public Optional<Student>  findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {

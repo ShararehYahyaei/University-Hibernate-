@@ -1,7 +1,6 @@
 package org.example;
 
-import org.example.entity.Name;
-import org.example.entity.Student;
+import org.example.entity.*;
 import org.example.service.StudentService;
 import org.example.util.Validation;
 import java.util.Optional;
@@ -19,10 +18,8 @@ public class Main {
 
     }
 
-    private static void saveStudent(Name name, String userName, String password,
-                                    String phoneNumber, String email, String nationalCode, String StudentNumber) {
-        Student student = new Student(name, userName, password, phoneNumber, email, nationalCode, StudentNumber);
-        studentService.save(student);
+    private static void saveStudent(Student student) {
+     studentService.save(student);
     }
 
     public static Student registerStudent() {
@@ -43,8 +40,9 @@ public class Main {
         System.out.println("please enter nationalCode");
         String nationalCode = sc.nextLine();
         System.out.println("please enter StudentNumber");
-        String StudentNumber = sc.nextLine();
-        return new Student(name, userName, password, phoneNumber, email, nationalCode, StudentNumber);
+        String studentNumber = sc.nextLine();
+        User user = new User(userName,password, Type.Student,phoneNumber,email,nationalCode);
+        return new Student(name,studentNumber,user);
     }
 
     public static void updateStudent() {
@@ -63,7 +61,7 @@ public class Main {
             case "1":
                 System.out.println("please enter phoneNumber");
                 String phoneNumber = sc.nextLine();
-                student.get().setPhoneNumber(phoneNumber);
+              //  student.get().setPhoneNumber(phoneNumber);
                 if (studentValidation.valid(student.get()).isEmpty()) {
                     studentService.update(student.get());
                 } else {
@@ -73,7 +71,7 @@ public class Main {
             case "2":
                 System.out.println("please enter email");
                 String email = sc.nextLine();
-                student.get().setEmail(email);
+               // student.get().setEmail(email);
                 if (studentValidation.valid(student.get()).isEmpty()) {
                     studentService.update(student.get());
                 } else {
@@ -83,7 +81,7 @@ public class Main {
             case "3":
                 System.out.println("please enter password");
                 String password = sc.nextLine();
-                student.get().setPassword(password);
+             //   student.get().setPassword(password);
                 if (studentValidation.valid(student.get()).isEmpty()) {
                     studentService.update(student.get());
                 } else {

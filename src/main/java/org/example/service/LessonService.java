@@ -11,25 +11,14 @@ public class LessonService {
     private final static LessonRepo lessonRepo = new LessonRepo();
 
     public Lesson saveLesson(Lesson Lesson) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-                Validation<Lesson> studentValidation = new Validation<>();
-                if (studentValidation.valid(Lesson).isEmpty()) {
-                    lessonRepo.saveLesson(session, Lesson);
-                } else {
-                    studentValidation.valid(Lesson).forEach(System.out::println);
-                }
-                session.getTransaction().commit();
-                return Lesson;
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                throw new RuntimeException(e);
-            }
-        }
+        return getLesson(Lesson);
     }
 
     public Lesson update(Lesson lesson) {
+        return getLesson(lesson);
+    }
+
+    private Lesson getLesson(Lesson lesson) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
