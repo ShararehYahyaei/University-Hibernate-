@@ -11,19 +11,23 @@ public class StudentRepo {
         session.persist(student);
         return student;
     }
+//
+//    public int deleteById(Session session, Long id) {
+//        return session.createMutationQuery(
+//                        "DELETE FROM org.example.entity.Student s WHERE s.id = :id"
+//                )
+//                .setParameter("id", id)
+//                .executeUpdate();
+//    }
 
-    public int deleteById(Session session, Long id) {
-        return session.createMutationQuery(
-                        "DELETE FROM org.example.entity.Student s WHERE s.id = :id"
-                )
-                .setParameter("id", id)
-                .executeUpdate();
+
+    public void deleteByEntity(Session session, Student student) {
+         session.remove(student);
     }
 
 
-    public Optional<Student> findById(Session session, Long id) {
-        return session.byId(Student.class).loadOptional(id);
-
+    public Student findById(Session session, Long id) {
+        return session.get(Student.class, id);
     }
 
     public List<Student> getAllStudents(Session session) {

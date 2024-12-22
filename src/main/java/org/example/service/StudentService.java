@@ -9,13 +9,12 @@ import org.example.repository.UserRepo;
 import org.example.util.Validation;
 
 import java.util.List;
-import java.util.Optional;
 
 public class StudentService {
     private final static StudentRepo studentRepo = new StudentRepo();
-    private final static UserRepo userrepo=new UserRepo();
+    private final static UserRepo userrepo = new UserRepo();
 
-    public  Student save(Student student) {
+    public Student save(Student student) {
         return getStudent(student);
     }
 
@@ -25,9 +24,9 @@ public class StudentService {
                 session.beginTransaction();
                 Validation<Student> studentValidation = new Validation<>();
                 if (studentValidation.valid(student).isEmpty()) {
-                    User user=student .getUser();
-                   User userResult= userrepo.saveUser(session,user);
-                   student.setUser(userResult);
+                    User user = student.getUser();
+                    //   User userResult= userrepo.saveUser(session,user);
+                    //   student.setUser(userResult);
                     studentRepo.saveStudent(session, student);
                 } else {
                     studentValidation.valid(student).forEach(System.out::println);
@@ -45,11 +44,12 @@ public class StudentService {
     public Student update(Student student) {
         return getStudent(student);
     }
-    public Optional<Student>  findById(Long id) {
+
+    public Student findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-          Optional<Student>student= studentRepo.findById(session, id);
+              Student student = studentRepo.findById(session, id);
                 session.getTransaction().commit();
                 return student;
             } catch (Exception e) {
@@ -58,6 +58,7 @@ public class StudentService {
             }
         }
     }
+
     public List<Student> findAll() {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
@@ -72,15 +73,16 @@ public class StudentService {
             }
         }
     }
-    public String deleteStudent(Long id){
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try{
-                session.beginTransaction();
-                studentRepo.deleteById(session, id);
-                session.getTransaction().commit();
-                return "Delete Successfully ...";
 
-            }catch (Exception e){
+    public void deleteStudent(Long id) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                Student student = studentRepo.findById(session, id);
+                studentRepo.deleteByEntity(session,student);
+                session.getTransaction().commit();
+
+            } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);
             }
