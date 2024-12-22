@@ -29,11 +29,12 @@ public class Teacher {
     @OneToOne
     private User user;
 
-    public Teacher(String specialty, String degree, String employeeCode) {
+    public Teacher(String specialty, String degree, String employeeCode,User user) {
 
         this.specialty = specialty;
         this.degree = degree;
         this.employeeCode = employeeCode;
+        this.user = user;
     }
 
     @ManyToMany

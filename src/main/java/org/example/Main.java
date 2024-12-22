@@ -1,12 +1,11 @@
 package org.example;
 
 import org.example.entity.*;
+import org.example.service.LessonService;
 import org.example.service.StudentService;
-import org.example.service.UserService;
-import org.example.util.Validation;
+import org.example.service.TeacherService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -14,7 +13,8 @@ import java.util.Scanner;
 public class Main {
     static Scanner sc = new Scanner(System.in);
     static StudentService studentService = new StudentService();
-    static UserService userService = new UserService();
+    static LessonService lessonService = new LessonService();
+    static TeacherService teacherService = new TeacherService();
 
 
     public static void main(String[] args) {
@@ -22,11 +22,8 @@ public class Main {
 
     }
 
-    private static void saveStudent(Student student) {
-        studentService.save(student);
-    }
 
-    public static Student registerStudent() {
+    public static void saveStudent() {
         System.out.println("Add new Student");
         Name name = new Name();
         System.out.println("please enter firstname");
@@ -45,8 +42,9 @@ public class Main {
         String nationalCode = sc.nextLine();
         System.out.println("please enter StudentNumber");
         String studentNumber = sc.nextLine();
-        User user = new User(name,userName, password, Type.Student, phoneNumber, email, nationalCode);
-        return new Student( studentNumber, user);
+        User user = new User(name, userName, password, Type.Student, phoneNumber, email, nationalCode);
+        Student student = new Student(studentNumber, user);
+        studentService.saveStudent(student);
     }
 
     public static void updateStudent() {
@@ -69,27 +67,65 @@ public class Main {
             case "1":
                 System.out.println("please enter your new Phone Number :");
                 student.getUser().setPhoneNumber(sc.nextLine());
-                studentService.save(student);
+                studentService.saveStudent(student);
                 break;
             case "2":
                 System.out.println("please enter your new Email :");
                 student.getUser().setEmail(sc.nextLine());
-                studentService.save(student);
+                studentService.saveStudent(student);
                 break;
         }
 
 
     }
 
-//    public static void getAllStudents() {
-//        studentService.findAll().forEach(System.out::println);
-//    }
-////
-//    public static void getStudentById(Long id) {
-//        studentService.findById(id).ifPresent(System.out::println);
+
+    public void createNewLesson() {
+        System.out.println("please enter your Course Name :");
+        String courseName = sc.nextLine();
+        System.out.println("please enter your Credit:");
+        int credit = sc.nextInt();
+        System.out.println("please enter your capacity");
+        int capacity = sc.nextInt();
+        System.out.println("please enter your StartDate");
+        String startDate = sc.nextLine();
+        Lesson lesson = new Lesson(courseName, credit, capacity, startDate);
+        lessonService.saveLesson(lesson);
+        System.out.println("Add new lesson successfully");
+
+
+    }
+
+//    public void deleteStudentBYId(Long id) {
+//        studentService.deleteStudent(1L);
 //    }
 
-    public void deleteStudentBYId(Long id) {
-        studentService.deleteStudent(1L);
+
+    public static void saveTeacher() {
+        System.out.println("please add information");
+        Name name = new Name();
+        System.out.println("please enter firstname");
+        name.setFirstName(sc.nextLine());
+        System.out.println("please enter lastname");
+        name.setLastName(sc.nextLine());
+        System.out.println("please enter password");
+        String password = sc.nextLine();
+        System.out.println("please enter phoneNumber");
+        String phoneNumber = sc.nextLine();
+        System.out.println("please enter email");
+        String email = sc.nextLine();
+        System.out.println("please enter userName");
+        String userName = sc.nextLine();
+        System.out.println("please enter nationalCode");
+        String nationalCode = sc.nextLine();
+        System.out.println("please enter Degree");
+        String degree = sc.nextLine();
+        System.out.println("please enter speciality");
+        String speciality = sc.nextLine();
+        System.out.println("please enter employee code ");
+        String employeeCode = sc.nextLine();
+        User user = new User(name, userName, password, Type.Teacher, phoneNumber, email, nationalCode);
+        Teacher teacher = new Teacher(speciality, degree, employeeCode, user);
+        teacherService.saveTeacher(teacher);
     }
 }

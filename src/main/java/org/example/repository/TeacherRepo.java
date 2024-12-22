@@ -1,16 +1,13 @@
 package org.example.repository;
 
-import org.example.entity.Student;
 import org.example.entity.Teacher;
 import org.hibernate.Session;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TeacherRepo {
-    public Teacher saveSTeacher(Session session, Teacher teacher) {
+    public void saveSTeacher(Session session, Teacher teacher) {
         session.persist(teacher);
-        return teacher;
     }
 
     public int deleteById(Session session, Long id) {

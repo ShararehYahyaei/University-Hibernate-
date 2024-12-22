@@ -14,29 +14,27 @@ public class StudentService {
     private final static StudentRepo studentRepo = new StudentRepo();
     private final static UserRepo userrepo = new UserRepo();
 
-    public Student save(Student student) {
-        return getStudent(student);
-    }
-
-    private Student getStudent(Student student) {
+    public void saveStudent(Student student) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
+                Validation<User> userValidation = new Validation<>();
                 Validation<Student> studentValidation = new Validation<>();
-                if (studentValidation.valid(student).isEmpty()) {
-                    studentRepo.saveStudent(session, student);
-                } else {
-                    studentValidation.valid(student).forEach(System.out::println);
+                if (!userValidation.valid(student.getUser()).isEmpty()) {
+                    userValidation.valid(student.getUser()).forEach(System.out::println);
                 }
-
-                session.getTransaction().commit();
-                return student;
+                if (!studentValidation.valid(student).isEmpty()) {
+                    studentValidation.valid(student).forEach(System.out::println);
+                } else {
+                     studentRepo.saveStudent(session, student);
+                }
             } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);
             }
         }
     }
+
     public Student findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {

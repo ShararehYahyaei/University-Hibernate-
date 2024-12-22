@@ -18,11 +18,11 @@ public class TeacherService {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                Validation<Teacher> studentValidation = new Validation<>();
-                if (studentValidation.valid(teacher).isEmpty()) {
+                Validation<Teacher> teacherValidation = new Validation<>();
+                if (teacherValidation.valid(teacher).isEmpty()) {
                     teacherRepo.saveSTeacher(session, teacher);
                 } else {
-                    studentValidation.valid(teacher).forEach(System.out::println);
+                    teacherValidation.valid(teacher).forEach(System.out::println);
                 }
                 session.getTransaction().commit();
                 return teacher;
@@ -33,9 +33,7 @@ public class TeacherService {
         }
     }
 
-    public Teacher update(Teacher teacher) {
-        return getTeacher(teacher);
-    }
+
     public  Teacher findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
