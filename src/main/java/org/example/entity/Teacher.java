@@ -2,15 +2,13 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Entity
 @Data
@@ -28,8 +26,7 @@ public class Teacher {
     @Column(nullable = false)
     @NotNull(message = "Employee Code must not be null")
     private String employeeCode;
-    @OneToOne
-    @Cascade({org.hibernate.annotations.CascadeType.REMOVE, CascadeType.PERSIST})
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
     public Teacher(String specialty, String degree, String employeeCode,User user) {
@@ -39,8 +36,11 @@ public class Teacher {
         this.user = user;
     }
 
-    @ManyToMany(mappedBy = "teacher")
-    private List<Lesson> lesson;
+    @ManyToMany(cascade = {  CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+            CascadeType.PERSIST }, fetch = FetchType.EAGER)
+    private List<Lesson> lesson=new ArrayList<>();
 
     @Override
     public String toString() {

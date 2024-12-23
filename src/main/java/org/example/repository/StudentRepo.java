@@ -1,7 +1,10 @@
 package org.example.repository;
 
 import org.example.entity.Student;
+import org.example.entity.Teacher;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
+
 import java.util.List;
 
 public class StudentRepo {
@@ -11,7 +14,7 @@ public class StudentRepo {
     }
 
     public void deleteByEntity(Session session, Student student) {
-         session.remove(student);
+        session.remove(student);
     }
 
 
@@ -20,8 +23,16 @@ public class StudentRepo {
     }
 
     public List<Student> getAllStudents(Session session) {
-        return  session.createQuery("from Student",Student.class).list();
+        return session.createQuery("from Student", Student.class).list();
     }
+
+    public Student updatestudent(Session session, Student student) {
+        session.merge(student);
+        session.flush();
+        return session.get(Student.class, student.getId());
+    }
+
+
 
 
 }

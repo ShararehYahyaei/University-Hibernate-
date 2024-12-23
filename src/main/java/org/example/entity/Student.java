@@ -7,9 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,12 +24,13 @@ public class Student {
     @Column(nullable = false)
     @NotNull(message = "StudentNumber must not be null")
     private String studentNumber;
-    @OneToOne
-    @Cascade({CascadeType.REMOVE, CascadeType.PERSIST})
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
-    @ManyToMany(mappedBy = "students")
-    List<Lesson> lessons;
-
+    @ManyToMany(cascade = { CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+            CascadeType.PERSIST }, fetch = FetchType.EAGER)
+    private List<Lesson> lesson=new ArrayList<>();
     @Override
     public String toString() {
         return "Student{" + "id=" + id +

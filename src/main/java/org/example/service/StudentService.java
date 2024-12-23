@@ -3,6 +3,7 @@ package org.example.service;
 
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.Student;
+import org.example.entity.Teacher;
 import org.example.entity.User;
 import org.example.repository.StudentRepo;
 import org.example.repository.UserRepo;
@@ -81,4 +82,19 @@ public class StudentService {
         }
 
     }
+    public Student studentUpdate(Student student) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            Validation<User> userValidation = new Validation<>();
+            Validation<Student> studentValidation = new Validation<>();
+            Set<String> validationUser = userValidation.valid(student.getUser());
+            validationUser.addAll(studentValidation.valid(student));
+            if (!validationUser.isEmpty()) {
+                validationUser.forEach(System.out::println);
+            }
+            studentRepo.updatestudent(session, student);
+            return student;
+        }
+    }
+
 }

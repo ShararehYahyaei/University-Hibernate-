@@ -1,26 +1,34 @@
 package org.example.service;
 
-import org.example.entity.Name;
-import org.example.entity.Student;
-import org.example.entity.Type;
-import org.example.entity.User;
+import org.example.config.SessionFactoryInstance;
+import org.example.entity.*;
+import org.hibernate.Session;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class StudentServiceTest {
     StudentService studentService = new StudentService();
+    LessonService lessonService = new LessonService();
+    @BeforeEach
+    public void afterAll(){
+        clearAll();
+    }
+
 
     @Test
-    void deleteStudent() {
 
-        Name name = new Name();
-        name.setFirstName("reza");
-        name.setLastName("Yahayei");
-        User user = new User(name,"hadi", "5699", Type.Student, "4578", "ha@gmail.com", "2222");
-        Student student = new Student( "4545", user);
+    void deleteStudent() {
+        Student student = new Student("4545", new User(new Name("s2name", "s2family"), "s2nameUserName",
+                "5999", Type.Student, "+983333333333", "s2name2@gmail.com", "2322"));
         Student resultStudent = studentService.saveStudent(student);
-        studentService.deleteStudent(1L);
+        studentService.deleteStudent(resultStudent.getId());
         assertNull(studentService.findById(resultStudent.getId()));
 
     }
@@ -30,40 +38,125 @@ class StudentServiceTest {
         Name name = new Name();
         name.setFirstName("reza");
         name.setLastName("Yahayei");
-        User user = new User(name,"hadi", "5699", Type.Student, "4578", "ha@gmail.com", "2222");
-        Student student = new Student( "4545", user);
+        User user = new User(name, "hadi", "5699", Type.Student, "+989124577788", "ha@gmail.com", "2222");
+        Student student = new Student("4545", user);
         student.getUser().setEmail("ssssss@gmail.com");
         Student resultStudent = studentService.saveStudent(student);
         assertEquals(resultStudent.getUser().getEmail(), "ssssss@gmail.com");
-      clearDatabase(resultStudent.getId());
+
 
     }
-
 
     @Test
     void saveStudent() {
         Name name = new Name();
         name.setFirstName("reza");
         name.setLastName("Yahayei");
-        User user = new User(name,"hadi", "5699", Type.Student, "+989125478998", "ha@gmail.com", "2222");
+        User user = new User(name, "hadi", "5699", Type.Student, "+989125478998", "ha@gmail.com", "2222");
         Student student = new Student("4545", user);
         Student resultStudent = studentService.saveStudent(student);
         assertEquals(student, resultStudent);
-    //  clearDatabase(resultStudent.getId());
+
     }
 
     private void clearDatabase(Long id) {
         studentService.deleteStudent(id);
     }
+
     @Test
-    void saveStudentRes() {
+    void addNewLesson() {
+        List<Lesson> lessons = new ArrayList<>();
+        Lesson lesson = new Lesson("math", 10, 20, "2024-12-29");
+        Lesson lesson1 = new Lesson("math1", 10, 20, "2024-12-25");
+        Lesson lesson2 = new Lesson("math2", 10, 20, "2024-12-26");
+        Lesson lesson3 = new Lesson("math3", 10, 20, "2024-12-27");
+        Lesson l = lessonService.saveLesson(lesson);
+        Lesson l1 = lessonService.saveLesson(lesson1);
+        Lesson l2 = lessonService.saveLesson(lesson2);
+        Lesson l3 = lessonService.saveLesson(lesson3);
+        lessons.add(l);
+        lessons.add(l1);
+        lessons.add(l2);
+        lessons.add(l3);
         Name name = new Name();
         name.setFirstName("reza");
         name.setLastName("Yahayei");
-        User user = new User(name,"hadi", "5699", Type.Student, "9125478998", "ha@gmail.com", "2222");
-        Student student = new Student("4545", user);
-        Student resultStudent = studentService.saveStudent(student);
-        assertNull(resultStudent);
-       // clearDatabase(resultStudent.getId());
+
+        List<Lesson> lessonsAvailable = lessonService.getAvailableLessons();
+        for (Lesson lll : lessons) {
+            Stream<Lesson> lessonStream = lessonsAvailable.stream().filter(c -> c.getId().equals(lll.getId()));
+            Optional<Lesson> first = lessonStream.findFirst();
+            Lesson actual = first.get();
+            assertEquals(lll.getCourseName(), actual.getCourseName());
+            assertEquals(lll.getStartDate(), actual.getStartDate());
+        }
+
+
     }
+
+
+    @Test
+    void addNewLessonWithGettingStudent() {
+        List<Lesson> lessons = new ArrayList<>();
+        Lesson lesson = new Lesson("math", 10, 3, "2024-12-29");
+        Lesson l = lessonService.saveLesson(lesson);
+        lessons.add(l);
+        Lesson l1 = lessonService.saveLesson(new Lesson("math1", 10, 5, "2024-12-29"));
+        lessons.add(l1);
+
+
+        Name name = new Name();
+        name.setFirstName("s1name");
+        name.setLastName("s1family");
+        User user = new User(name, "hadi", "5599", Type.Student, "+989125478963", "ha@gmail.com", "2222");
+        Student student = new Student("46545", user);
+        Student resultStudent = studentService.saveStudent(student);
+
+
+        Name name1 = new Name();
+        name.setFirstName("s2name");
+        name.setLastName("s2family");
+        User user1 = new User(name1, "shahla", "5999", Type.Student, "+989125478863", "hha@gmail.com", "2322");
+        Student student1 = new Student("4545", user1);
+        Student resultStudent1 = studentService.saveStudent(student1);
+
+
+        Name name2 = new Name();
+        name.setFirstName("s3name");
+        name.setLastName("s3family");
+        User user2 = new User(name2, "hoda", "5799", Type.Student, "+989125878963", "hla@gmail.com", "2422");
+        Student student2 = new Student("4545", user2);
+        Student resultStudent2 = studentService.saveStudent(student2);
+
+        resultStudent.getLesson().add(l);
+        resultStudent1.getLesson().add(l);
+        resultStudent2.getLesson().add(l);
+
+
+        studentService.studentUpdate(resultStudent);
+        studentService.studentUpdate(resultStudent1);
+        studentService.studentUpdate(resultStudent2);
+        List<Lesson> lA = lessonService.getAvailableLessons();
+
+        assertEquals(1, lessonService.getAvailableLessons().size());
+        assertEquals(l1.getCourseName(), lA.get(0).getCourseName());
+
+
+
+    }
+
+    public void clearAll() {
+        try (Session session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.createQuery("delete from Student").executeUpdate();
+            session.createQuery("delete from Lesson ").executeUpdate();
+            session.createQuery("delete from Teacher ").executeUpdate();
+            session.createQuery("delete from User ").executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

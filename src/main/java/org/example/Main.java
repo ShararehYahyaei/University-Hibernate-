@@ -5,8 +5,7 @@ import org.example.service.LessonService;
 import org.example.service.StudentService;
 import org.example.service.TeacherService;
 
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -96,11 +95,6 @@ public class Main {
 
     }
 
-//    public void deleteStudentBYId(Long id) {
-//        studentService.deleteStudent(1L);
-//    }
-
-
     public static void saveTeacher() {
         System.out.println("please add information");
         Name name = new Name();
@@ -129,9 +123,60 @@ public class Main {
         teacherService.saveTeacher(teacher);
     }
 
-    public void getAllTeachers(){
+    public void getAllTeachers() {
+        List<Teacher> teachers = teacherService.findAll();
+        for (Teacher teacher : teachers) {
+            System.out.println(teacher.getUser().getId());
+            System.out.println(teacher.getSpecialty());
+            System.out.println(teacher.getDegree());
+        }
 
+    }
 
-        teacherService.findAll();
+    private static void addLessonForTeacher(List<Teacher> teachers) {
+        System.out.println("please enter your Id For Teacher :");
+        Long id = sc.nextLong();
+        Teacher teacherForLesson = teacherService.findById(id);
+        for (Teacher teacher : teachers) {
+            if (teacher.getUser().getId().equals(id)) {
+                teacherForLesson = teacher;
+                System.out.println(teacher.getUser().getUserName());
+                System.out.println(teacher.getSpecialty());
+            } else {
+                System.out.println("Invalid Id");
+            }
+        }
+        System.out.println("These are lessons");
+        getAllLessons();
+        System.out.println("please enter your Id For Lesson : ");
+        System.out.println("Press 0 for Exit");
+        List<Lesson> lessonForTeachers = new ArrayList<>();
+        while (true) {
+            System.out.print("Enter Lesson ID: ");
+            Long lessonId = sc.nextLong();
+            if (lessonId == 0) {
+                break;
+            }
+            Lesson lesson = lessonService.findById(lessonId);
+            if (lesson != null) {
+                lessonForTeachers.add(lesson);
+                teacherForLesson.setLesson(lessonForTeachers);
+                teacherService.teacherUpdate(teacherForLesson);
+                System.out.println("Lesson added successfully!");
+            } else {
+                System.out.println("Invalid Lesson ID. Please try again.");
+            }
+        }
+
+    }
+
+    private static void getAllLessons() {
+        List<Lesson> lessons = lessonService.findAll();
+        for (Lesson lesson : lessons) {
+            System.out.println(lesson.getId());
+            System.out.println(lesson.getCredit());
+            System.out.println(lesson.getCapacity());
+
+        }
     }
 }

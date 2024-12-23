@@ -1,9 +1,6 @@
 package org.example.config;
 
-import org.example.entity.Lesson;
-import org.example.entity.Student;
-import org.example.entity.Teacher;
-import org.example.entity.User;
+import org.example.entity.*;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.SessionFactory;
 
@@ -17,6 +14,8 @@ public class SessionFactoryInstance {
                 .addAnnotatedClass(Teacher.class)
                 .addAnnotatedClass(Lesson.class)
                 .addAnnotatedClass(User.class)
+                .addAnnotatedClass(Score.class)
+
                 .buildSessionFactory();
 
     }
