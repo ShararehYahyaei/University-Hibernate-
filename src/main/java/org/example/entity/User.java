@@ -3,12 +3,10 @@ package org.example.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
-
+@EqualsAndHashCode
 @Entity
 @Data
 @Table(name = "USERS")
@@ -50,8 +48,8 @@ public class User {
     @NotNull(message = "Email must not be null")
     private String email;
     @Column(nullable = false, unique = true)
+    @Size(min = 10,max = 10)
     @NotNull(message = "NationalCode must not be null")
-
     private String nationalCode;
 
 

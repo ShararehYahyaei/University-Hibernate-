@@ -23,7 +23,7 @@ public class Teacher {
     @Column(nullable = false)
     @NotNull(message = "Degree must not be null")
     private String degree;
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     @NotNull(message = "Employee Code must not be null")
     private String employeeCode;
     @OneToOne(cascade = CascadeType.ALL)

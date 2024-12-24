@@ -6,6 +6,7 @@ import org.example.entity.Lesson;
 import org.example.entity.Name;
 import org.example.entity.Teacher;
 import org.hibernate.Session;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class LessonServiceTest {
 
     LessonService lessonService = new LessonService();
-    @BeforeEach
+    @AfterEach
     public void afterAll(){
         clearAll();
     }
@@ -32,8 +33,6 @@ class LessonServiceTest {
         Lesson lesson = new Lesson("math", 10, 20, "2024-11-15");
         Lesson res = lessonService.saveLesson(lesson);
         assertEquals(res, lesson);
-
-
     }
 
     @Test

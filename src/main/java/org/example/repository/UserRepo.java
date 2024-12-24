@@ -1,13 +1,13 @@
 package org.example.repository;
 
-import org.example.entity.Student;
+import org.example.config.SessionFactoryInstance;
 import org.example.entity.User;
 import org.hibernate.Session;
 
 import java.util.List;
 
 public class UserRepo {
-    public User saveUser(Session session, User user) {
+    public User saveAdmin(Session session, User user) {
         session.persist(user);
         return user;
     }
@@ -20,4 +20,16 @@ public class UserRepo {
         return session.get(User.class, id);
     }
 
+    public User checkUsernameAndPassword(String userName, String password) {
+        try (Session session1 = SessionFactoryInstance.sessionFactory.openSession()) {
+            session1.beginTransaction();
+            String hql="from User where userName=:userName ";
+            User user = session1.createQuery(hql, User.class).setParameter("userName", userName).getSingleResultOrNull();
+            if (user!=null&&user.getPassword().equals(password)) {
+                return user;
+            }
+
+        }
+     return null;
+    }
 }

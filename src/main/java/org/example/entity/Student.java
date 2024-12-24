@@ -21,7 +21,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     @NotNull(message = "StudentNumber must not be null")
     private String studentNumber;
     @OneToOne(cascade = CascadeType.ALL)

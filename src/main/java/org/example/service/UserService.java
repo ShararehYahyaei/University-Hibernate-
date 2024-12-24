@@ -1,18 +1,27 @@
 package org.example.service;
 
 import org.example.config.SessionFactoryInstance;
-import org.example.entity.Student;
+
 import org.example.entity.User;
 import org.example.repository.UserRepo;
-import org.example.util.Validation;
-import org.hibernate.Session;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserService {
 
     private static final UserRepo userrepo = new UserRepo();
+
+
+    public void saveAdmin(User user) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                userrepo.saveAdmin(session, user);
+                session.getTransaction().commit();
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     public User findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
@@ -29,4 +38,11 @@ public class UserService {
     }
 
 
+    public User checkUsernameAndPassword(String userName, String password) {
+        if (userName.trim().isEmpty() || password.trim().isEmpty()) {
+            return null;
+        }
+        return userrepo.checkUsernameAndPassword(userName, password);
+
+    }
 }

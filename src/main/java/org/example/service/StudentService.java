@@ -3,13 +3,12 @@ package org.example.service;
 
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.Student;
-import org.example.entity.Teacher;
 import org.example.entity.User;
+import org.example.entity.dto.StudentDto;
 import org.example.repository.StudentRepo;
-import org.example.repository.UserRepo;
 import org.example.util.Validation;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -59,13 +58,26 @@ public class StudentService {
                 List<Student> students = studentRepo.getAllStudents(session);
                 session.getTransaction().commit();
                 return students;
-
             } catch (Exception e) {
                 session.getTransaction().rollback();
                 throw new RuntimeException(e);
             }
         }
     }
+
+    public List<StudentDto> getStudentSimpleWithSomeProperties() {
+        List<Student> students = findAll();
+        List<StudentDto> simpleStudentDto = new ArrayList<>();
+        for (Student std : students) {
+            simpleStudentDto.add(new StudentDto(std.getStudentNumber()
+                    , std.getUser().getName().getFirstName()
+                    , std.getUser().getName().getLastName()));
+        }
+
+        return simpleStudentDto;
+
+    }
+
 
     public void deleteStudent(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
@@ -82,6 +94,7 @@ public class StudentService {
         }
 
     }
+
     public Student studentUpdate(Student student) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             session.beginTransaction();

@@ -3,9 +3,8 @@ package org.example.service;
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.*;
 import org.hibernate.Session;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class StudentServiceTest {
     StudentService studentService = new StudentService();
     LessonService lessonService = new LessonService();
-    @BeforeEach
+    @AfterEach
     public void afterAll(){
         clearAll();
     }
@@ -26,7 +25,7 @@ class StudentServiceTest {
 
     void deleteStudent() {
         Student student = new Student("4545", new User(new Name("s2name", "s2family"), "s2nameUserName",
-                "5999", Type.Student, "+983333333333", "s2name2@gmail.com", "2322"));
+                "5999", Type.Student, "+983333333333", "s2name2@gmail.com", "1111111111"));
         Student resultStudent = studentService.saveStudent(student);
         studentService.deleteStudent(resultStudent.getId());
         assertNull(studentService.findById(resultStudent.getId()));
@@ -38,11 +37,12 @@ class StudentServiceTest {
         Name name = new Name();
         name.setFirstName("reza");
         name.setLastName("Yahayei");
-        User user = new User(name, "hadi", "5699", Type.Student, "+989124577788", "ha@gmail.com", "2222");
+        User user = new User(name, "hadi", "5699", Type.Student, "+989124577788", "ha@gmail.com", "1111111111");
         Student student = new Student("4545", user);
-        student.getUser().setEmail("ssssss@gmail.com");
+        String expectedEmail = "3ssssss@gmail.com";
+        student.getUser().setEmail(expectedEmail);
         Student resultStudent = studentService.saveStudent(student);
-        assertEquals(resultStudent.getUser().getEmail(), "ssssss@gmail.com");
+        assertEquals(resultStudent.getUser().getEmail(), expectedEmail);
 
 
     }
@@ -52,7 +52,7 @@ class StudentServiceTest {
         Name name = new Name();
         name.setFirstName("reza");
         name.setLastName("Yahayei");
-        User user = new User(name, "hadi", "5699", Type.Student, "+989125478998", "ha@gmail.com", "2222");
+        User user = new User(name, "hadi", "5699", Type.Student, "+989125478998", "ha@gmail.com", "1111111111");
         Student student = new Student("4545", user);
         Student resultStudent = studentService.saveStudent(student);
         assertEquals(student, resultStudent);
@@ -108,24 +108,26 @@ class StudentServiceTest {
         Name name = new Name();
         name.setFirstName("s1name");
         name.setLastName("s1family");
-        User user = new User(name, "hadi", "5599", Type.Student, "+989125478963", "ha@gmail.com", "2222");
-        Student student = new Student("46545", user);
+        User user = new User(name, "hadi", "5599", Type.Student, "+989125478963", "ha@gmail.com", "1111111112");
+        Student student = new Student("465335", user);
         Student resultStudent = studentService.saveStudent(student);
 
 
         Name name1 = new Name();
         name.setFirstName("s2name");
         name.setLastName("s2family");
-        User user1 = new User(name1, "shahla", "5999", Type.Student, "+989125478863", "hha@gmail.com", "2322");
-        Student student1 = new Student("4545", user1);
+        User user1 = new User(name1, "shahla", "5999", Type.Student, "+989125478863",
+                "hha@gmail.com", "2222222222");
+        Student student1 = new Student("4542", user1);
         Student resultStudent1 = studentService.saveStudent(student1);
 
 
         Name name2 = new Name();
         name.setFirstName("s3name");
         name.setLastName("s3family");
-        User user2 = new User(name2, "hoda", "5799", Type.Student, "+989125878963", "hla@gmail.com", "2422");
-        Student student2 = new Student("4545", user2);
+        User user2 = new User(name2, "hoda", "5799", Type.Student, "+989125878963",
+                "hla@gmail.com", "1111111111");
+        Student student2 = new Student("4541", user2);
         Student resultStudent2 = studentService.saveStudent(student2);
 
         resultStudent.getLesson().add(l);

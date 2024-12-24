@@ -1,7 +1,6 @@
 package org.example.service;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+
 import jakarta.transaction.Transactional;
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.*;
@@ -127,6 +126,21 @@ public class TeacherService {
             }
         }
 
+    }
+
+    public List<org.example.entity.dtoTeacher.TeacherDto> getAllTeachersWithSOmeProperties() {
+        List<Teacher> teachers = findAll();
+        List<org.example.entity.dtoTeacher.TeacherDto> simpleTeachers = new ArrayList<org.example.entity.dtoTeacher.TeacherDto>();
+        for (Teacher teacher : teachers) {
+            org.example.entity.dtoTeacher.TeacherDto dtoTeacher = new   org.example.entity.dtoTeacher.TeacherDto ();
+            dtoTeacher.setEmployeeCode(teacher.getEmployeeCode());
+            dtoTeacher.setSpecialty(teacher.getSpecialty());
+            dtoTeacher.setFirstName(teacher.getUser().getName().getFirstName());
+            dtoTeacher.setLastName(teacher.getUser().getName().getLastName());
+            simpleTeachers.add(dtoTeacher);
+
+        }
+        return simpleTeachers;
     }
 
 }

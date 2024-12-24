@@ -4,7 +4,6 @@ import org.example.config.SessionFactoryInstance;
 import org.example.entity.*;
 import org.example.repository.LessonRepo;
 import org.example.util.Validation;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +75,8 @@ public class LessonService {
         }
 
     }
+
+
 
     public List<Lesson> getAvailableLessons() {
 

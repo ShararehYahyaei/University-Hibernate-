@@ -15,6 +15,8 @@ public class TeacherRepo {
 
     public void saveSTeacher(Session session, Teacher teacher) {
         session.persist(teacher);
+        session.merge(teacher);
+        session.flush();
 
     }
 
