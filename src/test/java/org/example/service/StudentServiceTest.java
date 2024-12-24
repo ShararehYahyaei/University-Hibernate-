@@ -5,6 +5,7 @@ import org.example.entity.*;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,14 +16,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class StudentServiceTest {
     StudentService studentService = new StudentService();
     LessonService lessonService = new LessonService();
+
     @AfterEach
-    public void afterAll(){
+    public void afterAll() {
         clearAll();
     }
 
 
     @Test
-
     void deleteStudent() {
         Student student = new Student("4545", new User(new Name("s2name", "s2family"), "s2nameUserName",
                 "5999", Type.Student, "+983333333333", "s2name2@gmail.com", "1111111111"));
@@ -59,9 +60,6 @@ class StudentServiceTest {
 
     }
 
-    private void clearDatabase(Long id) {
-        studentService.deleteStudent(id);
-    }
 
     @Test
     void addNewLesson() {
@@ -78,10 +76,6 @@ class StudentServiceTest {
         lessons.add(l1);
         lessons.add(l2);
         lessons.add(l3);
-        Name name = new Name();
-        name.setFirstName("reza");
-        name.setLastName("Yahayei");
-
         List<Lesson> lessonsAvailable = lessonService.getAvailableLessons();
         for (Lesson lll : lessons) {
             Stream<Lesson> lessonStream = lessonsAvailable.stream().filter(c -> c.getId().equals(lll.getId()));
@@ -139,11 +133,23 @@ class StudentServiceTest {
         studentService.studentUpdate(resultStudent1);
         studentService.studentUpdate(resultStudent2);
         List<Lesson> lA = lessonService.getAvailableLessons();
-
         assertEquals(1, lessonService.getAvailableLessons().size());
         assertEquals(l1.getCourseName(), lA.get(0).getCourseName());
 
 
+    }
+
+    @Test
+    void fetchByUserId() {
+        Name name = new Name();
+        name.setFirstName("s3name");
+        name.setLastName("s3family");
+        User user2 = new User(name, "hoda", "5799", Type.Student, "+989125878963",
+                "hla@gmail.com", "1111111111");
+        Student student2 = new Student("4541", user2);
+        studentService.saveStudent(student2);
+        Student std = studentService.fetchByUserId(user2);
+        assertEquals("4541", std.getStudentNumber());
 
     }
 

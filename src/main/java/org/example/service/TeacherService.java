@@ -4,6 +4,8 @@ package org.example.service;
 import jakarta.transaction.Transactional;
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.*;
+import org.example.entity.dto.StudentDto;
+import org.example.entity.dtoLesson.LessonStudentDto;
 import org.example.repository.TeacherRepo;
 import org.example.util.Validation;
 
@@ -83,6 +85,7 @@ public class TeacherService {
         return null;
     }
 
+
     public List<Student> putScorePerLesson(Teacher teacher, Score score) {
         List<Student> students = new ArrayList<>();
         for (Lesson l : teacher.getLesson()) {
@@ -94,6 +97,24 @@ public class TeacherService {
             s.getLesson().get(0).setScore(score);
         }
         return students;
+    }
+
+
+
+    public  List<LessonStudentDto> getLessonsStudentsDto(Teacher teacherForLesson) {
+        List<Lesson> lessons = teacherForLesson.getLesson();
+        List<LessonStudentDto> lessonStudentsDto = new ArrayList<>();
+        for (Lesson lesson : lessons) {
+            List<StudentDto> dtos = new ArrayList<>();
+            List<Student> std = lesson.getStudents();
+            for (Student student : std) {
+                dtos.add(new StudentDto(student.getStudentNumber(), student.getUser().getName().getFirstName(), student.getUser().getName().getLastName()));
+            }
+            LessonStudentDto dto = new LessonStudentDto(lesson.getCourseName(), lesson.getCapacity(), dtos);
+            lessonStudentsDto.add(dto);
+
+        }
+        return lessonStudentsDto;
     }
 
 
@@ -132,7 +153,7 @@ public class TeacherService {
         List<Teacher> teachers = findAll();
         List<org.example.entity.dtoTeacher.TeacherDto> simpleTeachers = new ArrayList<org.example.entity.dtoTeacher.TeacherDto>();
         for (Teacher teacher : teachers) {
-            org.example.entity.dtoTeacher.TeacherDto dtoTeacher = new   org.example.entity.dtoTeacher.TeacherDto ();
+            org.example.entity.dtoTeacher.TeacherDto dtoTeacher = new org.example.entity.dtoTeacher.TeacherDto();
             dtoTeacher.setEmployeeCode(teacher.getEmployeeCode());
             dtoTeacher.setSpecialty(teacher.getSpecialty());
             dtoTeacher.setFirstName(teacher.getUser().getName().getFirstName());
@@ -143,4 +164,15 @@ public class TeacherService {
         return simpleTeachers;
     }
 
+    public Teacher fetchByUserId(User user) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            Teacher teacher = teacherRepo.fetchTeacherByUserId(session, user);
+            session.getTransaction().commit();
+            return teacher;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

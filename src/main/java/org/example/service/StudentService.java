@@ -78,6 +78,18 @@ public class StudentService {
 
     }
 
+    public Student fetchByUserId(User user) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            Student student=studentRepo.fetchStudentByUserId( session, user);
+            session.getTransaction().commit();
+            return student;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public void deleteStudent(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {

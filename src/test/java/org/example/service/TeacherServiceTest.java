@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.*;
+import org.example.entity.dtoLesson.LessonStudentDto;
 import org.example.repository.TeacherRepo;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
@@ -60,11 +61,6 @@ class TeacherServiceTest {
         assertNull(teacherService.findById(result.getId()));
     }
 
-    private void clearDatabase(Long id) {
-        teacherService.deleteTeacher(id);
-    }
-
-
     @Test
     void addNewLesson() {
         List<Lesson> lessons = new ArrayList<>();
@@ -104,7 +100,8 @@ class TeacherServiceTest {
 
         User user = new User(new Name("Teacher1name", "Teacher1family"), "Teacher1nameUsername", "5699", Type.Teacher,
                 "+981111111111", "Teacher1name1@gmail.com", "1111111111");
-        Teacher teacherR = teacherService.saveTeacher(new Teacher("engineer", "Bachelor", "4548", user));
+        Teacher teacherR = teacherService.saveTeacher(new Teacher("engineer",
+                "Bachelor", "4548", user));
         teacherR.getLesson().addAll(lessons);
         Teacher teacher1 = teacherService.teacherUpdate(teacherR);
 
@@ -138,7 +135,19 @@ class TeacherServiceTest {
             assertEquals(expected.getStudentNumber(), student.getStudentNumber());
         }
 
+    }
 
+    @Test
+    void fetchByUserId() {
+        User user = new User(new Name("Teacher1name", "Teacher1family"),
+                "Teacher1nameUsername",
+                "5699", Type.Teacher,
+                "+981111111111", "Teacher1name1@gmail.com", "1111111111");
+        Teacher teacherR = teacherService.saveTeacher(new Teacher("engineer",
+                "Bachelor", "4548", user));
+        teacherService.teacherUpdate(teacherR);
+        Teacher td = teacherService.fetchByUserId(user);
+        assertEquals("4548", td.getEmployeeCode());
     }
     public void clearAll() {
         try (Session session = SessionFactoryInstance.sessionFactory.openSession()) {

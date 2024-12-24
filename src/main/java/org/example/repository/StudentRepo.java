@@ -2,6 +2,7 @@ package org.example.repository;
 
 import org.example.entity.Student;
 import org.example.entity.Teacher;
+import org.example.entity.User;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -33,6 +34,10 @@ public class StudentRepo {
     }
 
 
+    public Student fetchStudentByUserId(Session session, User user) {
+        Student student = session.createQuery("from Student where user = :user",Student.class)
+                .setParameter("user", user).getSingleResult();
 
-
+        return student;
+    }
 }

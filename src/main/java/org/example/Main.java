@@ -2,10 +2,12 @@ package org.example;
 
 import org.example.entity.*;
 import org.example.entity.dto.StudentDto;
+import org.example.entity.dtoLesson.LessonStudentDto;
 import org.example.service.LessonService;
 import org.example.service.StudentService;
 import org.example.service.TeacherService;
 import org.example.service.UserService;
+import org.w3c.dom.ls.LSOutput;
 
 import java.util.*;
 
@@ -17,6 +19,7 @@ public class Main {
     static LessonService lessonService = new LessonService();
     static TeacherService teacherService = new TeacherService();
     static UserService userService = new UserService();
+
 
     public static void saveAdmin() {
         Name name = new Name("Admin", "Admin");
@@ -44,15 +47,23 @@ public class Main {
             }
             switch (user.getType()) {
                 case Admin:
-                    //todo Admin
                     menuForAdmin();
-
                     break;
                 case Teacher:
-                    //todo Teacher
+                    Teacher teacher = teacherService.fetchByUserId(user);
+                    if (teacher == null) {
+                        System.out.println("teacher not found");
+                    } else {
+                        showMenuForTeacher(teacher);
+                    }
                     break;
                 case Student:
-                    //todo Student
+                    Student student = studentService.fetchByUserId(user);
+                    if (student == null) {
+                        System.out.println("student not found");
+                    } else {
+                        showMenuForStudent(student);
+                    }
                     break;
             }
 
@@ -60,6 +71,45 @@ public class Main {
 
 
     }
+
+    private static void showMenuForTeacher(Teacher teacher) {
+        System.out.println("Welcome To Teacher Portal");
+        System.out.println("1-show All lessons with students");
+        System.out.println("2-exit");
+        String result = new Scanner(System.in).nextLine();
+        switch (result) {
+            case "1":
+                showAllLessonsWithStudents(teacher);
+                break;
+            case "2":
+                System.exit(0);
+                break;
+
+
+        }
+
+
+    }
+
+    private static void showAllLessonsWithStudents(Teacher teacher) {
+
+        Teacher teacherForLesson = teacherService.findById(teacher.getId());
+        if (teacherForLesson == null) {
+            System.out.println("teacher not found");
+        } else {
+            System.out.println("List of lessons : ");
+            List<LessonStudentDto> lessonStudentDtos = teacherService.getLessonsStudentsDto(teacherForLesson);
+            for (LessonStudentDto lsd : lessonStudentDtos) {
+                System.out.println(lsd.getCourseName() + " " + lsd.getCapacity());
+                lsd.getStudents().forEach(student -> {
+                    System.out.println(student.getStudentNumber()+" "+student.getFirstName()+" "+student.getLastName());
+                });
+            }
+
+        }
+
+    }
+
 
     public static User loginUser() {
         System.out.println("please enter your userName:");
@@ -282,9 +332,14 @@ public class Main {
                 System.out.println("Program finished.");
                 break;
 
-            case"9":
-                //todo add new student
-
+            case "9":
+                Student student = studentService.studentUpdate(savestudent());
+                if (student == null) {
+                    System.out.println("Invalid date and unsaved student");
+                } else {
+                    System.out.println("student successfully saved");
+                }
+                break;
             case "10":
                 System.exit(0);
         }
@@ -380,5 +435,95 @@ public class Main {
         return les;
     }
 
+    public static Student savestudent() {
+        System.out.println("please add information");
+        Name name = new Name();
+        System.out.println("please enter firstname");
+        name.setFirstName(sc.nextLine());
+        System.out.println("please enter lastname");
+        name.setLastName(sc.nextLine());
+        System.out.println("please enter password");
+        String password = sc.nextLine();
+        System.out.println("please enter phoneNumber");
+        String phoneNumber = sc.nextLine();
+        System.out.println("please enter email");
+        String email = sc.nextLine();
+        System.out.println("please enter userName");
+        String userName = sc.nextLine();
+        System.out.println("please enter nationalCode");
+        String nationalCode = sc.nextLine();
+        System.out.println("please enter your student number:");
+        String studentNumber = new Scanner(System.in).nextLine();
+        User user = new User(name, userName, password, Type.Student, phoneNumber, email, nationalCode);
+        Student student = new Student(studentNumber, user);
+        return studentService.saveStudent(student);
+
+    }
+
+
+    public static void showMenuForStudent(Student student) {
+        System.out.println("Welcome To Student Portal");
+        System.out.println("1-show All lessons and take lessons");
+        System.out.println("2-exit");
+        String result = new Scanner(System.in).nextLine();
+        switch (result) {
+            case "1":
+                takeNewLesStudent(student);
+                break;
+            case "2":
+                System.exit(0);
+                break;
+
+
+        }
+
+    }
+
+    public static void takeNewLesStudent(Student student) {
+        List<Lesson> lessonAvailable = lessonService.getAvailableLessons();
+        if (lessonAvailable.isEmpty()) {
+            System.out.println("There is no any available lesson");
+            return;
+        }
+
+        System.out.println("List of Lessons:");
+        for (Lesson lesson : lessonAvailable) {
+            System.out.println("ID: " + lesson.getId() + ", Credit: " + lesson.getCredit() + ", Capacity: " + lesson.getCapacity());
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        List<Lesson> lessonsForTake = new ArrayList<>();
+
+        while (true) {
+            System.out.println("Please enter the ID of the lesson you want to add (or type 0 to finish):");
+            Long id = scanner.nextLong();
+
+            if (id == 0) {
+                break;
+            }
+
+            Lesson lesson = lessonService.findById(id);
+            if (lesson == null) {
+                System.out.println("Invalid ID, please try again.");
+                continue;
+            }
+
+            if (lesson.getCapacity() <= 0) {
+                System.out.println("This lesson is full and cannot be added.");
+                continue;
+            }
+
+            lessonsForTake.add(lesson);
+            System.out.println("Lesson with ID " + id + " added successfully.");
+        }
+
+        if (!lessonsForTake.isEmpty()) {
+            student.getLesson().addAll(lessonsForTake);
+            studentService.studentUpdate(student);
+            System.out.println("All selected lessons added successfully.");
+        } else {
+            System.out.println("No lessons were added.");
+        }
+    }
 
 }

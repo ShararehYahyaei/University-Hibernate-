@@ -3,7 +3,9 @@ package org.example.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.example.entity.Student;
 import org.example.entity.Teacher;
+import org.example.entity.User;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -44,4 +46,8 @@ public class TeacherRepo {
     }
 
 
+    public Teacher fetchTeacherByUserId(Session session, User user) {
+        return session.createQuery("from Teacher where user = :user",Teacher.class)
+                .setParameter("user", user).getSingleResult();
+    }
 }
