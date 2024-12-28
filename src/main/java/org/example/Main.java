@@ -34,10 +34,15 @@ public class Main {
         User user2 = new User(new Name("Admin2", "Admin2"), "Admin2", "Admin2", Type.Admin,
                 "Admin2", "Admin2", "Admin2");
         userService.saveAdmin(user2);
-
+        
     }
 
     public static void main(String[] args) {
+        runner();
+
+    }
+
+    private static void runner() {
         saveAdmin();
         while (true) {
             User user = loginUser();
@@ -68,8 +73,6 @@ public class Main {
             }
 
         }
-
-
     }
 
     private static void showMenuForTeacher(Teacher teacher) {
@@ -102,7 +105,7 @@ public class Main {
             for (LessonStudentDto lsd : lessonStudentDtos) {
                 System.out.println(lsd.getCourseName() + " " + lsd.getCapacity());
                 lsd.getStudents().forEach(student -> {
-                    System.out.println(student.getStudentNumber()+" "+student.getFirstName()+" "+student.getLastName());
+                    System.out.println(student.getStudentNumber() + " " + student.getFirstName() + " " + student.getLastName());
                 });
             }
 

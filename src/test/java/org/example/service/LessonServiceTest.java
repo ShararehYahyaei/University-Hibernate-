@@ -28,6 +28,11 @@ class LessonServiceTest {
     }
 
 
+    @BeforeEach
+    public void beforeAll() {
+        clearAll();
+    }
+
     @Test
     void saveLesson() {
         Lesson lesson = new Lesson("math", 10, 20, "2024-11-15");
@@ -73,7 +78,6 @@ class LessonServiceTest {
         lessons.add(l1);
         lessons.add(l2);
         lessons.add(l3);
-
 
         List<Lesson> lessonsAvailable = lessonService.getAvailableLessons();
         List<Lesson> expectedList = List.of(l2, l3);
@@ -131,5 +135,7 @@ class LessonServiceTest {
             e.printStackTrace();
         }
     }
+
+
 
 }

@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +51,10 @@ public class Lesson {
     @ManyToMany(mappedBy = "lesson",fetch = FetchType.EAGER)
     private List<Student> students =new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.EAGER,mappedBy = "lesson")
+    @OneToOne(fetch = FetchType.EAGER,mappedBy = "lesson",cascade = { jakarta.persistence.CascadeType.DETACH,
+            jakarta.persistence.CascadeType.MERGE,
+            jakarta.persistence.CascadeType.REFRESH,
+            CascadeType.PERSIST })
     private Score score ;
 
 

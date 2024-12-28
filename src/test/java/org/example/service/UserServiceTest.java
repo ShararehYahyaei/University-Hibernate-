@@ -6,6 +6,7 @@ import org.example.entity.Type;
 import org.example.entity.User;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,6 +18,11 @@ class UserServiceTest {
     public void afterAll() {
         clearAll();
     }
+    @BeforeEach
+    public void beforeAll() {
+        clearAll();
+    }
+
 
     @Test
     void checkUsernameAndPassword() {

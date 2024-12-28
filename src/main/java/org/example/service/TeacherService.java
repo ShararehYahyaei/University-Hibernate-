@@ -86,22 +86,9 @@ public class TeacherService {
     }
 
 
-    public List<Student> putScorePerLesson(Teacher teacher, Score score) {
-        List<Student> students = new ArrayList<>();
-        for (Lesson l : teacher.getLesson()) {
-            for (Student s : l.getStudents()) {
-                students.add(s);
-            }
-        }
-        for (Student s : students) {
-            s.getLesson().get(0).setScore(score);
-        }
-        return students;
-    }
 
 
-
-    public  List<LessonStudentDto> getLessonsStudentsDto(Teacher teacherForLesson) {
+    public List<LessonStudentDto> getLessonsStudentsDto(Teacher teacherForLesson) {
         List<Lesson> lessons = teacherForLesson.getLesson();
         List<LessonStudentDto> lessonStudentsDto = new ArrayList<>();
         for (Lesson lesson : lessons) {
@@ -175,4 +162,6 @@ public class TeacherService {
         }
         return null;
     }
+
+
 }

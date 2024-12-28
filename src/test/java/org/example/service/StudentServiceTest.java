@@ -4,6 +4,7 @@ import org.example.config.SessionFactoryInstance;
 import org.example.entity.*;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -21,7 +22,10 @@ class StudentServiceTest {
     public void afterAll() {
         clearAll();
     }
-
+    @BeforeEach
+    public void beforeAll() {
+        clearAll();
+    }
 
     @Test
     void deleteStudent() {

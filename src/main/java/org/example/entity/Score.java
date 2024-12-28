@@ -20,4 +20,9 @@ public class Score {
     private int score;
     @OneToOne
     private Lesson lesson;
+
+    public Score(int i, Lesson lessons) {
+        this.score = i;
+        this.lesson = lessons;
+    }
 }

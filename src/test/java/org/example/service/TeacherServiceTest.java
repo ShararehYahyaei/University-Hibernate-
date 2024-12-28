@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,8 +20,13 @@ class TeacherServiceTest {
     TeacherService teacherService = new TeacherService();
     LessonService lessonService = new LessonService();
     StudentService studentService = new StudentService();
+
     @AfterEach
-    public void afterAll(){
+    public void afterAll() {
+      clearAll();
+    }
+    @BeforeEach
+    public void beforeAll() {
         clearAll();
     }
 
@@ -52,8 +58,6 @@ class TeacherServiceTest {
 
     @Test
     void deleteTeacher() {
-
-
         Teacher teacher = new Teacher("engineer", "Bachelor", "4546", new User(new Name("T1", "T1Family"), "T1", "5699", Type.Teacher,
                 "+989124444444", "T1@gmail.com", "1111111111"));
         Teacher result = teacherService.saveTeacher(teacher);
@@ -79,7 +83,6 @@ class TeacherServiceTest {
         teacher.getLesson().addAll(lessons);
         teacherService.teacherUpdate(teacher);
         assertEquals(3, lessonService.findAll().size());
-
 
 
     }
@@ -149,6 +152,7 @@ class TeacherServiceTest {
         Teacher td = teacherService.fetchByUserId(user);
         assertEquals("4548", td.getEmployeeCode());
     }
+
     public void clearAll() {
         try (Session session = SessionFactoryInstance.sessionFactory.openSession()) {
             session.beginTransaction();
@@ -161,5 +165,62 @@ class TeacherServiceTest {
             e.printStackTrace();
         }
     }
+
+//    @Test
+//    void putScorePerLesson() {
+//        Lesson lesson = lessonService.saveLesson(new Lesson("math", 10, 20, "2024-12-29"));
+//        Teacher teacherAfter = teacherService.saveTeacher(new Teacher("mohandes", "diplom", "12", new User(new Name("T1", "T1F"),
+//                "hadi", "5699", Type.Teacher, "+989125555555",
+//                "T1@gmail.com", "1111111111")));
+//        teacherAfter.getLesson().add(lesson);
+//        Teacher resultTeacher = teacherService.teacherUpdate(teacherAfter);
+//
+//
+//        Student s1 = studentService.saveStudent(new Student("46541",
+//                new User(new Name("s1name", "s1family"), "s1nameUserName", "5599",
+//                Type.Student, "+982222222222", "s1name1@gmail.com", "1111111112")));
+//
+//
+//        Student s2 = studentService.saveStudent(new Student("47441",
+//                new User(new Name("s11name", "s11family"), "s11nameUserName", "55599",
+//                Type.Student, "+983222222222", "s11name1@gmail.com", "2111111112")));
+//
+//
+//        Student s3 = studentService.saveStudent(new Student("447441",
+//                new User(new Name("s21name", "s21family"), "s21nameUserName", "55598",
+//                Type.Student, "+983222222422", "s11name22@gmail.com", "2111111412")));
+//
+//
+//        s1.getLesson().add(lesson);
+//      Student  afterS1 = studentService.studentUpdate(s1);
+//
+//        s2.getLesson().add(lesson);
+//        Student  afters2 = studentService.studentUpdate(s2);
+//
+//        s3.getLesson().add(lesson);
+//      Student  afters3 = studentService.studentUpdate(s3);
+//
+//
+//        Lesson lessons = teacherService.findById(teacherAfter.getId()).getLesson().getFirst();
+//        Student studentForScore = lessons.getStudents().stream().filter(c -> c.getId().equals(afterS1.getId())).findFirst().get();
+//        Student student1ForScore = lessons.getStudents().stream().filter(c -> c.getId().equals(afters2.getId())).findFirst().get();
+//        Student student2ForScore = lessons.getStudents().stream().filter(c -> c.getId().equals(afters3.getId())).findFirst().get();
+//
+//        studentForScore.getLesson().stream().findFirst().get().setScore(new Score(10,lessons));
+//        student1ForScore.getLesson().stream().findFirst().get().setScore(new Score(12,lessons));
+//        student2ForScore.getLesson().stream().findFirst().get().setScore(new Score(15,lessons));
+//
+//
+//        studentService.studentUpdate(studentForScore);
+//        studentService.studentUpdate(student1ForScore);
+//        studentService.studentUpdate(student2ForScore);
+//        lessonService.lessonUpdate(lesson);
+//
+//
+//    }
+
+
+
+
 
 }
