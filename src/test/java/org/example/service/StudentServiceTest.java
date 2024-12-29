@@ -68,10 +68,10 @@ class StudentServiceTest {
     @Test
     void addNewLesson() {
         List<Lesson> lessons = new ArrayList<>();
-        Lesson lesson = new Lesson("math", 10, 20, "2024-12-29");
-        Lesson lesson1 = new Lesson("math1", 10, 20, "2024-12-30");
-        Lesson lesson2 = new Lesson("math2", 10, 20, "2024-12-30");
-        Lesson lesson3 = new Lesson("math3", 10, 20, "2024-12-30");
+        Lesson lesson = new Lesson("math", 10, 20, "2025-01-01");
+        Lesson lesson1 = new Lesson("math1", 10, 20, "2025-01-01");
+        Lesson lesson2 = new Lesson("math2", 10, 20, "2025-01-01");
+        Lesson lesson3 = new Lesson("math3", 10, 20, "2025-01-01");
         Lesson l = lessonService.saveLesson(lesson);
         Lesson l1 = lessonService.saveLesson(lesson1);
         Lesson l2 = lessonService.saveLesson(lesson2);
@@ -96,7 +96,7 @@ class StudentServiceTest {
     @Test
     void addNewLessonWithGettingStudent() {
         List<Lesson> lessons = new ArrayList<>();
-        Lesson lesson = new Lesson("math", 10, 3, "2024-12-29");
+        Lesson lesson = new Lesson("math", 10, 3, "2025-01-01");
         Lesson l = lessonService.saveLesson(lesson);
         lessons.add(l);
         Lesson l1 = lessonService.saveLesson(new Lesson("math1", 10, 5, "2024-12-29"));

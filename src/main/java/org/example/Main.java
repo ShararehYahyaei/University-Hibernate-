@@ -7,9 +7,7 @@ import org.example.service.LessonService;
 import org.example.service.StudentService;
 import org.example.service.TeacherService;
 import org.example.service.UserService;
-import org.w3c.dom.ls.LSOutput;
 
-import javax.crypto.spec.PSource;
 import java.util.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -50,7 +48,7 @@ public class Main {
                 User user = loginUser();
                 if (user == null) {
                     System.out.println("User not found. Please try again.");
-                    continue; // Continue the loop instead of exiting
+                    continue;
                 }
                 switch (user.getType()) {
                     case Admin:
@@ -76,7 +74,7 @@ public class Main {
                         break;
                     default:
                         System.out.println("Invalid user type.");
-                        continue;
+
                 }
             } catch (Exception e) {
                 System.out.println("An error occurred: " + e.getMessage());
@@ -84,21 +82,6 @@ public class Main {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private static void showMenuForTeacher(Teacher teacher) {
         System.out.println("Welcome To Teacher Portal");
         System.out.println("1-show All lessons with students");
@@ -110,8 +93,7 @@ public class Main {
                 showAllLessonsWithStudents(teacher);
                 break;
             case "2":
-                showAllLessons(teacher);
-
+                showAllLessonsAndgiveScore(teacher);
                 break;
             case "3":
                 System.exit(0);
@@ -253,9 +235,9 @@ public class Main {
                     System.out.println("There is no teacher");
                 } else {
                     for (org.example.entity.dtoTeacher.TeacherDto dto : dtoTeachers) {
-                        System.out.println(dto.getFirstName());
-                        System.out.println(dto.getLastName());
-                        System.out.println(dto.getEmployeeCode());
+                        System.out.println("firstName:"+" "+ dto.getFirstName());
+                        System.out.println("Lastname:"+" " + dto.getLastName());
+                        System.out.println("Employee Code:"+" " +dto.getEmployeeCode());
                     }
                 }
 
@@ -558,7 +540,7 @@ public class Main {
         }
     }
 
-    public static void showAllLessons(Teacher teacher) {
+    public static void showAllLessonsAndgiveScore(Teacher teacher) {
         List<Lesson> lessons = teacher.getLesson();
         if (lessons.isEmpty()) {
             System.out.println("No lessons found for this teacher.");

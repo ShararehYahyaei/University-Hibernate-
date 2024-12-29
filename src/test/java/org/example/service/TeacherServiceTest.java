@@ -208,9 +208,8 @@ class TeacherServiceTest {
 
         teacherService.saveScoreForMyStudents(s2, resultTeacher, lesson, 15);
         double sc = studentScoreService.getScore(s2.getId(), resultTeacher.getId(), lesson.getId());
-        assertEquals(15,sc);
-
-
+        assertEquals(15, sc);
+        clearAll();
     }
 
 
