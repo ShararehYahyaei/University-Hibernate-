@@ -51,11 +51,11 @@ public class Lesson {
     @ManyToMany(mappedBy = "lesson",fetch = FetchType.EAGER)
     private List<Student> students =new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.EAGER,mappedBy = "lesson",cascade = { jakarta.persistence.CascadeType.DETACH,
-            jakarta.persistence.CascadeType.MERGE,
-            jakarta.persistence.CascadeType.REFRESH,
-            CascadeType.PERSIST })
-    private Score score ;
+//    @OneToOne(fetch = FetchType.EAGER,mappedBy = "lesson",cascade = { jakarta.persistence.CascadeType.DETACH,
+//            jakarta.persistence.CascadeType.MERGE,
+//            jakarta.persistence.CascadeType.REFRESH,
+//            CascadeType.PERSIST })
+//    private Score score ;
 
 
     public LocalDate getStartDateAsLocalDate() {

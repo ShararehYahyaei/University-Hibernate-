@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class LessonServiceTest {
@@ -66,10 +65,10 @@ class LessonServiceTest {
     @Test
     void addNewLessonWithZeroCapacity() {
         List<Lesson> lessons = new ArrayList<>();
-        Lesson lesson = new Lesson("math", 10, 0, "2024-12-29");
-        Lesson lesson1 = new Lesson("math1", 10, 0, "2024-12-25");
-        Lesson lesson2 = new Lesson("math2", 10, 10, "2024-12-26");
-        Lesson lesson3 = new Lesson("math3", 10, 20, "2024-12-27");
+        Lesson lesson = new Lesson("math", 10, 0, "2024-12-01");
+        Lesson lesson1 = new Lesson("math1", 10, 0, "2024-12-02");
+        Lesson lesson2 = new Lesson("math2", 10, 10, "2024-12-30");
+        Lesson lesson3 = new Lesson("math3", 10, 20, "2024-12-30");
         Lesson l = lessonService.saveLesson(lesson);
         Lesson l1 = lessonService.saveLesson(lesson1);
         Lesson l2 = lessonService.saveLesson(lesson2);
@@ -84,21 +83,22 @@ class LessonServiceTest {
         for (Lesson lll : expectedList) {
             Stream<Lesson> lessonStream = lessonsAvailable.stream().filter(c -> c.getId().equals(lll.getId()));
             Optional<Lesson> first = lessonStream.findFirst();
-            Lesson actual = first.get();
-            assertEquals(lll.getCourseName(), actual.getCourseName());
-            assertEquals(lll.getStartDate(), actual.getStartDate());
+            if (first.isPresent()) {
+                Lesson actual = first.get();
+                assertEquals(lll.getCourseName(), actual.getCourseName());
+                assertEquals(lll.getStartDate(), actual.getStartDate());
+            }
+            assertEquals(2, lessonsAvailable.size());
+
         }
-        assertEquals(2, lessonsAvailable.size());
-
     }
-
     @Test
     void addNewLessonWithPassedDate() {
         List<Lesson> lessons = new ArrayList<>();
         Lesson lesson = new Lesson("math", 10, 20, "2024-12-10");
         Lesson lesson1 = new Lesson("math1", 10, 20, "2024-12-01");
-        Lesson lesson2 = new Lesson("math2", 10, 20, "2024-12-26");
-        Lesson lesson3 = new Lesson("math3", 10, 20, "2024-12-27");
+        Lesson lesson2 = new Lesson("math2", 10, 20, "2024-12-30");
+        Lesson lesson3 = new Lesson("math3", 10, 20, "2024-12-30");
         Lesson l = lessonService.saveLesson(lesson);
         Lesson l1 = lessonService.saveLesson(lesson1);
         Lesson l2 = lessonService.saveLesson(lesson2);

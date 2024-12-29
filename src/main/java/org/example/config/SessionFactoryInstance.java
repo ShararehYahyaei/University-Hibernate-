@@ -14,7 +14,6 @@ public class SessionFactoryInstance {
                 .addAnnotatedClass(Teacher.class)
                 .addAnnotatedClass(Lesson.class)
                 .addAnnotatedClass(User.class)
-                .addAnnotatedClass(Score.class)
 
                 .buildSessionFactory();
 

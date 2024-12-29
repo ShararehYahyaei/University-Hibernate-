@@ -1,6 +1,7 @@
 package org.example.repository;
 
 import org.example.entity.Student;
+import org.example.entity.StudentsScore;
 import org.example.entity.Teacher;
 import org.example.entity.User;
 import org.hibernate.Session;
@@ -40,4 +41,6 @@ public class StudentRepo {
 
         return student;
     }
+
+
 }

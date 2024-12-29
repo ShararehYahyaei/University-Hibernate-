@@ -21,16 +21,17 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     @NotNull(message = "StudentNumber must not be null")
     private String studentNumber;
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
-    @ManyToMany(cascade = { CascadeType.DETACH,
+    @ManyToMany(cascade = {CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.REFRESH,
-            CascadeType.PERSIST }, fetch = FetchType.EAGER)
-    private List<Lesson> lesson=new ArrayList<>();
+            CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    private List<Lesson> lesson = new ArrayList<>();
+
     @Override
     public String toString() {
         return "Student{" + "id=" + id +

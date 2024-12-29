@@ -9,6 +9,7 @@ import org.example.service.TeacherService;
 import org.example.service.UserService;
 import org.w3c.dom.ls.LSOutput;
 
+import javax.crypto.spec.PSource;
 import java.util.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -34,7 +35,7 @@ public class Main {
         User user2 = new User(new Name("Admin2", "Admin2"), "Admin2", "Admin2", Type.Admin,
                 "Admin2", "Admin2", "Admin2");
         userService.saveAdmin(user2);
-        
+
     }
 
     public static void main(String[] args) {
@@ -45,46 +46,74 @@ public class Main {
     private static void runner() {
         saveAdmin();
         while (true) {
-            User user = loginUser();
-            if (user == null) {
-                System.out.println("user not found");
-                break;
+            try {
+                User user = loginUser();
+                if (user == null) {
+                    System.out.println("User not found. Please try again.");
+                    continue; // Continue the loop instead of exiting
+                }
+                switch (user.getType()) {
+                    case Admin:
+                        menuForAdmin();
+                        break;
+                    case Teacher:
+                        Teacher teacher = teacherService.fetchByUserId(user);
+                        if (teacher == null) {
+                            System.out.println("Teacher not found. Please try again.");
+                            continue;
+                        } else {
+                            showMenuForTeacher(teacher);
+                        }
+                        break;
+                    case Student:
+                        Student student = studentService.fetchByUserId(user);
+                        if (student == null) {
+                            System.out.println("Student not found. Please try again.");
+                            continue;
+                        } else {
+                            showMenuForStudent(student);
+                        }
+                        break;
+                    default:
+                        System.out.println("Invalid user type.");
+                        continue;
+                }
+            } catch (Exception e) {
+                System.out.println("An error occurred: " + e.getMessage());
+                System.out.println("Please try again.");
             }
-            switch (user.getType()) {
-                case Admin:
-                    menuForAdmin();
-                    break;
-                case Teacher:
-                    Teacher teacher = teacherService.fetchByUserId(user);
-                    if (teacher == null) {
-                        System.out.println("teacher not found");
-                    } else {
-                        showMenuForTeacher(teacher);
-                    }
-                    break;
-                case Student:
-                    Student student = studentService.fetchByUserId(user);
-                    if (student == null) {
-                        System.out.println("student not found");
-                    } else {
-                        showMenuForStudent(student);
-                    }
-                    break;
-            }
-
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private static void showMenuForTeacher(Teacher teacher) {
         System.out.println("Welcome To Teacher Portal");
         System.out.println("1-show All lessons with students");
-        System.out.println("2-exit");
+        System.out.println("2-take Score For Student");
+        System.out.println("3-exit");
         String result = new Scanner(System.in).nextLine();
         switch (result) {
             case "1":
                 showAllLessonsWithStudents(teacher);
                 break;
             case "2":
+                showAllLessons(teacher);
+
+                break;
+            case "3":
                 System.exit(0);
                 break;
 
@@ -528,5 +557,66 @@ public class Main {
             System.out.println("No lessons were added.");
         }
     }
+
+    public static void showAllLessons(Teacher teacher) {
+        List<Lesson> lessons = teacher.getLesson();
+        if (lessons.isEmpty()) {
+            System.out.println("No lessons found for this teacher.");
+            return;
+        }
+
+        System.out.println("Available lessons:");
+        for (Lesson lesson : lessons) {
+            System.out.println("Lesson ID: " + lesson.getId() + ", Course Name: " + lesson.getCourseName());
+        }
+
+        System.out.println("Please choose the ID for a lesson:");
+        Scanner scanner = new Scanner(System.in);
+        Long idLesson = scanner.nextLong();
+
+        Lesson selectedLesson = lessonService.findById(idLesson);
+        if (selectedLesson == null) {
+            System.out.println("Lesson not found.");
+            return;
+        }
+
+        List<Student> students = selectedLesson.getStudents();
+        if (students.isEmpty()) {
+            System.out.println("No students found for this lesson.");
+            return;
+        }
+
+        System.out.println("Students enrolled in this lesson:");
+        for (Student student : students) {
+            System.out.println("Student ID: " + student.getId() + ", Name: " + student.getUser().getName().getFirstName() + " " + student.getUser().getName().getLastName());
+        }
+
+        boolean continueGrading = true;
+        while (continueGrading) {
+            System.out.println("Please choose the ID for a student:");
+            Long idStudent = scanner.nextLong();
+
+            Student selectedStudent = studentService.findById(idStudent);
+            if (selectedStudent == null) {
+                System.out.println("Student not found. Please try again.");
+                continue;
+            }
+
+            System.out.println("Please enter a score for this student:");
+            double score = scanner.nextDouble();
+
+            teacherService.saveScoreForMyStudents(selectedStudent, teacher, selectedLesson, score);
+            System.out.println("Score saved successfully.");
+
+            System.out.println("Do you want to grade another student? (yes/no):");
+            String response = scanner.next();
+            if (!response.equalsIgnoreCase("yes")) {
+                continueGrading = false;
+            }
+        }
+
+        System.out.println("Grading process completed.");
+    }
+
 
 }

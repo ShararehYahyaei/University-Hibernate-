@@ -17,6 +17,7 @@ import java.util.Set;
 
 public class TeacherService {
     private final static TeacherRepo teacherRepo = new TeacherRepo();
+    private final static StudentScoreService stdScore=new StudentScoreService();
 
     @Transactional
     public Teacher saveTeacher(Teacher teacher) {
@@ -84,8 +85,6 @@ public class TeacherService {
         }
         return null;
     }
-
-
 
 
     public List<LessonStudentDto> getLessonsStudentsDto(Teacher teacherForLesson) {
@@ -161,6 +160,26 @@ public class TeacherService {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public List<Student> getMyListStudents(Teacher teacher) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            Teacher teacherResult = teacherRepo.findById(session, teacher.getId());
+            List<Student> students = new ArrayList<>();
+            for (Lesson l : teacherResult.getLesson()) {
+                students.addAll(l.getStudents());
+            }
+            return students;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void saveScoreForMyStudents(Student student,Teacher teacher,Lesson lesson,double score) {
+        stdScore.saveScoreForStudent( student,  teacher,  lesson,  score);
     }
 
 

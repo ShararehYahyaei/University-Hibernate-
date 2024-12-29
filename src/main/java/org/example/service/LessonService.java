@@ -79,7 +79,6 @@ public class LessonService {
 
 
     public List<Lesson> getAvailableLessons() {
-
         List<Lesson> availableLessons = new ArrayList<>();
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {

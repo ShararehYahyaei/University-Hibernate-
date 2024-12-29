@@ -69,9 +69,9 @@ class StudentServiceTest {
     void addNewLesson() {
         List<Lesson> lessons = new ArrayList<>();
         Lesson lesson = new Lesson("math", 10, 20, "2024-12-29");
-        Lesson lesson1 = new Lesson("math1", 10, 20, "2024-12-25");
-        Lesson lesson2 = new Lesson("math2", 10, 20, "2024-12-26");
-        Lesson lesson3 = new Lesson("math3", 10, 20, "2024-12-27");
+        Lesson lesson1 = new Lesson("math1", 10, 20, "2024-12-30");
+        Lesson lesson2 = new Lesson("math2", 10, 20, "2024-12-30");
+        Lesson lesson3 = new Lesson("math3", 10, 20, "2024-12-30");
         Lesson l = lessonService.saveLesson(lesson);
         Lesson l1 = lessonService.saveLesson(lesson1);
         Lesson l2 = lessonService.saveLesson(lesson2);
