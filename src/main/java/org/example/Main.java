@@ -3,10 +3,7 @@ package org.example;
 import org.example.entity.*;
 import org.example.entity.dto.StudentDto;
 import org.example.entity.dtoLesson.LessonStudentDto;
-import org.example.service.LessonService;
-import org.example.service.StudentService;
-import org.example.service.TeacherService;
-import org.example.service.UserService;
+import org.example.service.*;
 
 import java.util.*;
 
@@ -18,6 +15,7 @@ public class Main {
     static LessonService lessonService = new LessonService();
     static TeacherService teacherService = new TeacherService();
     static UserService userService = new UserService();
+    static StudentScoreService studentScore = new StudentScoreService();
 
 
     public static void saveAdmin() {
@@ -82,6 +80,7 @@ public class Main {
             }
         }
     }
+
     private static void showMenuForTeacher(Teacher teacher) {
         System.out.println("Welcome To Teacher Portal");
         System.out.println("1-show All lessons with students");
@@ -93,7 +92,7 @@ public class Main {
                 showAllLessonsWithStudents(teacher);
                 break;
             case "2":
-                showAllLessonsAndgiveScore(teacher);
+                showAllLessonsAndGiveScore(teacher);
                 break;
             case "3":
                 System.exit(0);
@@ -235,9 +234,9 @@ public class Main {
                     System.out.println("There is no teacher");
                 } else {
                     for (org.example.entity.dtoTeacher.TeacherDto dto : dtoTeachers) {
-                        System.out.println("firstName:"+" "+ dto.getFirstName());
-                        System.out.println("Lastname:"+" " + dto.getLastName());
-                        System.out.println("Employee Code:"+" " +dto.getEmployeeCode());
+                        System.out.println("firstName:" + " " + dto.getFirstName());
+                        System.out.println("Lastname:" + " " + dto.getLastName());
+                        System.out.println("Employee Code:" + " " + dto.getEmployeeCode());
                     }
                 }
 
@@ -478,16 +477,19 @@ public class Main {
     public static void showMenuForStudent(Student student) {
         System.out.println("Welcome To Student Portal");
         System.out.println("1-show All lessons and take lessons");
-        System.out.println("2-exit");
+        System.out.println("2-SHw SCore For Yourself");
+        System.out.println("3-exit");
         String result = new Scanner(System.in).nextLine();
         switch (result) {
             case "1":
                 takeNewLesStudent(student);
                 break;
             case "2":
+                ShowScoreForLessonForStudent(student);
+                break;
+            case "3":
                 System.exit(0);
                 break;
-
 
         }
 
@@ -540,7 +542,7 @@ public class Main {
         }
     }
 
-    public static void showAllLessonsAndgiveScore(Teacher teacher) {
+    public static void showAllLessonsAndGiveScore(Teacher teacher) {
         List<Lesson> lessons = teacher.getLesson();
         if (lessons.isEmpty()) {
             System.out.println("No lessons found for this teacher.");
@@ -598,6 +600,32 @@ public class Main {
         }
 
         System.out.println("Grading process completed.");
+    }
+
+    public static void ShowScoreForLessonForStudent(Student student) {
+        List<Lesson> lessons = student.getLesson();
+        if (lessons.isEmpty()) {
+            System.out.println("No lessons found for this student.");
+        }else{
+            for(Lesson les :lessons){
+                System.out.println("Course Name is :"+ les.getCourseName());
+                System.out.println("lesson Id is :"+ les.getId());
+            }
+            System.out.println("please choose one of them:");
+            Long idLesson=new Scanner(System.in).nextLong();
+           if(idLesson==0){
+               System.out.println("No lessons found for this student.");
+           }
+            else{
+             double score=studentScore.ShowScoreForStudent(student.getId(),idLesson);
+               System.out.println("this is your Score :"+score);
+           }
+
+
+        }
+
+
+
     }
 
 

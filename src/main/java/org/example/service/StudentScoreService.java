@@ -7,6 +7,9 @@ import org.example.entity.StudentsScore;
 import org.example.entity.Teacher;
 import org.example.repository.StudentScoreRepo;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
+
+import java.util.List;
 
 
 public class StudentScoreService {
@@ -42,4 +45,19 @@ public class StudentScoreService {
             }
         }
     }
+    public double ShowScoreForStudent(Long studentId,Long LessonId) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                double score = stdRepo.showScoreForStudent(session, studentId,LessonId);
+                session.getTransaction().commit();
+                return score;
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                return 0;
+            }
+        }
+
+    }
+
 }
