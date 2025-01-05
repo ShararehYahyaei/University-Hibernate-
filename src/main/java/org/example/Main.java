@@ -3,6 +3,7 @@ package org.example;
 import org.example.entity.*;
 import org.example.entity.dto.StudentDto;
 import org.example.entity.dtoLesson.LessonStudentDto;
+import org.example.repository.StudentRepo;
 import org.example.service.*;
 
 import java.util.*;
@@ -11,7 +12,7 @@ import java.util.*;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     static Scanner sc = new Scanner(System.in);
-    static StudentService studentService = new StudentService();
+    static StudentService studentService = new StudentService(new StudentRepo());
     static LessonService lessonService = new LessonService();
     static TeacherService teacherService = new TeacherService();
     static UserService userService = new UserService();

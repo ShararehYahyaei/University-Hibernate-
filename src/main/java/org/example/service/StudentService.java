@@ -13,29 +13,25 @@ import java.util.List;
 import java.util.Set;
 
 public class StudentService {
-    private final static StudentRepo studentRepo = new StudentRepo();
+    private final StudentRepo studentRepo;
+
+    public StudentService(StudentRepo studentRepo) {
+        this.studentRepo = studentRepo;
+    }
 
     public Student saveStudent(Student student) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-                Validation<User> userValidation = new Validation<>();
-                Validation<Student> studentValidation = new Validation<>();
-                Set<String> validationUser = userValidation.valid(student.getUser());
-                validationUser.addAll(studentValidation.valid(student));
-                if (!validationUser.isEmpty()) {
-                    validationUser.forEach(System.out::println);
-                    return null;
-                }
-                studentRepo.saveStudent(session, student);
-                return student;
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                throw new RuntimeException(e);
-            }
+        Validation<User> userValidation = new Validation<>();
+        Validation<Student> studentValidation = new Validation<>();
+        Set<String> validationUser = userValidation.valid(student.getUser());
+        validationUser.addAll(studentValidation.valid(student));
+        if (!validationUser.isEmpty()) {
+            validationUser.forEach(System.out::println);
+            return null;
         }
-
+        studentRepo.saveStudent(student);
+        return student;
     }
+
 
     public Student findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
@@ -79,17 +75,8 @@ public class StudentService {
     }
 
     public Student fetchByUserId(User user) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            session.beginTransaction();
-            Student student=studentRepo.fetchStudentByUserId( session, user);
-            session.getTransaction().commit();
-            return student;
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return studentRepo.fetchStudentByUserId(user);
     }
-
 
     public void deleteStudent(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {

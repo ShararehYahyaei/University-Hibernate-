@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.*;
 import org.example.entity.dtoLesson.LessonStudentDto;
+import org.example.repository.StudentRepo;
 import org.example.repository.TeacherRepo;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TeacherServiceTest {
     TeacherService teacherService = new TeacherService();
     LessonService lessonService = new LessonService();
-    StudentService studentService = new StudentService();
+    StudentService studentService = new StudentService(new StudentRepo());
     StudentScoreService studentScoreService = new StudentScoreService();
 
     @AfterEach
