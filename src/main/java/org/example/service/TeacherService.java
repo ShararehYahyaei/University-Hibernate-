@@ -16,44 +16,31 @@ import java.util.Set;
 
 
 public class TeacherService {
-    private final static TeacherRepo teacherRepo = new TeacherRepo();
-    private final static StudentScoreService stdScore=new StudentScoreService();
+    private final TeacherRepo teacherRepo;
+
+    public TeacherService(TeacherRepo teacherRepo) {
+        this.teacherRepo = teacherRepo;
+    }
 
     @Transactional
     public Teacher saveTeacher(Teacher teacher) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-                Validation<User> userValidation = new Validation<>();
-                Validation<Teacher> studentValidation = new Validation<>();
-                Set<String> validationUser = userValidation.valid(teacher.getUser());
-                validationUser.addAll(studentValidation.valid(teacher));
-                if (!validationUser.isEmpty()) {
-                    validationUser.forEach(System.out::println);
-                    return null;
-                }
-                teacherRepo.saveSTeacher(session, teacher);
-                return teacher;
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                throw new RuntimeException(e);
-            }
-        }
+        Validation<User> userValidation = new Validation<>();
+        Validation<Teacher> studentValidation = new Validation<>();
+        Set<String> validationUser = userValidation.valid(teacher.getUser());
+        validationUser.addAll(studentValidation.valid(teacher));
+        if (!validationUser.isEmpty()) {
+            teacherRepo.saveSTeacher(teacher);
+            return teacher;
+        } else {
+            String validationMessage = String.join("", validationUser);
+            throw new org.example.exception.ValidationException(validationMessage);
 
+        }
     }
 
-    public Teacher findById(Long id) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-                Teacher teacher = teacherRepo.findById(session, id);
-                session.getTransaction().commit();
-                return teacher;
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                throw new RuntimeException(e);
-            }
-        }
+    public Teacher findById(Teacher teacher) {
+        return teacherRepo.findById(teacher);
+
     }
 
     public Teacher teacherUpdate(Teacher teacher) {
@@ -72,18 +59,13 @@ public class TeacherService {
     }
 
     public Set<Student> getMyStudents(Teacher teacher) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            session.beginTransaction();
-            Teacher teacherResult = teacherRepo.findById(session, teacher.getId());
-            Set<Student> students = new HashSet<>();
-            for (Lesson l : teacherResult.getLesson()) {
-                students.addAll(l.getStudents());
-            }
-            return students;
-        } catch (Exception e) {
-            e.printStackTrace();
+        Teacher teacherResult = teacherRepo.findById(teacher);
+        List<Lesson>lessons=teacherResult.getLesson();
+        Set<Student> students = new HashSet<>();
+        for (int i = 0; i < lessons.size(); i++) {
+          lessons.get(i).getStudents().forEach(student -> students.add(student));
         }
-        return null;
+        return students;
     }
 
 
@@ -119,20 +101,9 @@ public class TeacherService {
         }
     }
 
-    public void deleteTeacher(Long id) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-                Teacher teacher = teacherRepo.findById(session, id);
-                teacherRepo.deleteByEntity(session, teacher);
-                session.getTransaction().commit();
-
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                throw new RuntimeException(e);
-            }
-        }
-
+    public void deleteTeacher(Teacher teacher) {
+        Teacher res = findById(teacher);
+        teacherRepo.deleteByEntity(res);
     }
 
     public List<org.example.entity.dtoTeacher.TeacherDto> getAllTeachersWithSOmeProperties() {
@@ -151,36 +122,20 @@ public class TeacherService {
     }
 
     public Teacher fetchByUserId(User user) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            session.beginTransaction();
-            Teacher teacher = teacherRepo.fetchTeacherByUserId(session, user);
-            session.getTransaction().commit();
-            return teacher;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        Teacher teacher = teacherRepo.fetchTeacherByUserId(user);
+        return teacher;
     }
-
 
     public List<Student> getMyListStudents(Teacher teacher) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            session.beginTransaction();
-            Teacher teacherResult = teacherRepo.findById(session, teacher.getId());
-            List<Student> students = new ArrayList<>();
-            for (Lesson l : teacherResult.getLesson()) {
-                students.addAll(l.getStudents());
-            }
-            return students;
-        } catch (Exception e) {
-            e.printStackTrace();
+        Teacher teacherResult = teacherRepo.findById(teacher);
+        List<Student> students = new ArrayList<>();
+        for (Lesson l : teacherResult.getLesson()) {
+            students.addAll(l.getStudents());
         }
-        return null;
+        return students;
     }
-
-    public void saveScoreForMyStudents(Student student,Teacher teacher,Lesson lesson,double score) {
-        stdScore.saveScoreForStudent( student,  teacher,  lesson,  score);
-    }
-
-
 }
+
+//    public void saveScoreForMyStudents(Student student, Teacher teacher, Lesson lesson, double score) {
+//        stdScore.saveScoreForStudent(student, teacher, lesson, score);
+//    }

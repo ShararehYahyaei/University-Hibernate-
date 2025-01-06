@@ -29,7 +29,11 @@ public class Teacher {
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
-    public Teacher(String specialty, String degree, String employeeCode,User user) {
+    public Teacher(Long id) {
+        this.id = id;
+    }
+
+    public Teacher(String specialty, String degree, String employeeCode, User user) {
         this.specialty = specialty;
         this.degree = degree;
         this.employeeCode = employeeCode;

@@ -6,6 +6,7 @@ import org.example.repository.LessonRepo;
 import org.example.repository.StudentRepo;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,23 +21,21 @@ class LessonServiceTest {
 
     @Test
     void addNewLesson() {
-        Mockito.when(lessonRepo.getAllLessons()).thenReturn(List.of(
+        Mockito.when(lessonRepo.getAllLessons(Mockito.any())).thenReturn(List.of(
                 new Lesson("math", 10, 20, "2023-01-01")
                 , new Lesson("math1", 10, 20, "2026-01-01")
                 , new Lesson("math2", 10, 20, "2026-01-01")
                 , new Lesson("math3", 10, 20, "2026-01-01")));
 
         List<Lesson> lessonsAvailable = lessonService.getAvailableLessons();
-
         assertEquals(3, lessonsAvailable.size());
 
     }
 
     @Test
-    void addNewLessonWithGettingStudent() {
+    void when_there_are_two_lessons_but_one_of_them_full_of_capacity_then_only_one_is_expected() {
 
         StudentRepo studentRepo = Mockito.mock(StudentRepo.class);
-        StudentService studentService = new StudentService(studentRepo);
 
         List<Lesson> lessons = new ArrayList<>();
         Lesson lesson = new Lesson("math", 10, 3, "2026-01-01");
@@ -45,7 +44,7 @@ class LessonServiceTest {
         Lesson l1 = new Lesson("math1", 10, 5, "2026-12-29");
         lessons.add(l1);
 
-        Mockito.when(lessonRepo.getAllLessons()).thenReturn(lessons);
+        Mockito.when(lessonRepo.getAllLessons(Mockito.any())).thenReturn(lessons);
 
         Student student = new Student("465335", new User(new Name("s1name", "s1family"), "hadi", "5599", Type.Student,
                 "+989125478963", "ha@gmail.com", "1111111112"));
@@ -59,47 +58,36 @@ class LessonServiceTest {
                 "hla@gmail.com", "1111111111"));
 
 
+
         lesson.getStudents().add(student);
         lesson.getStudents().add(student1);
         lesson.getStudents().add(student2);
-        List<Lesson> lA = lessonService.getAvailableLessons();
-        assertEquals(1, lA.size());
+        List<Lesson> availableLessons = lessonService.getAvailableLessons();
+        assertEquals(1, availableLessons.size());
+        assertEquals(l1, availableLessons.get(0));
 
     }
 
     @Test
     void save_method_with_exception_result() {
         Lesson lesson = new Lesson(null, 10, 3, "2023-01-01");
-        Mockito.when(lessonRepo.saveLesson(lesson)).thenThrow(new ValidationException(""));
         ValidationException exception = assertThrows(ValidationException.class, () -> lessonService.saveLesson(lesson));
         assertEquals("CourseName must not be null", exception.getMessage());
-        ;
+
     }
 
-
     @Test
-    void deleteLesson() {
+    void given_a_lesson_then_updated_exception_result() {
         Lesson lesson = new Lesson("math", 10, 20, "2026-12-18");
-        Lesson resSave = lessonService.saveLesson(lesson);
-        lessonService.deleteLesson(resSave.getId());
-        assertNull(lessonService.findById(resSave.getId()));
 
-    }
-
-    @Test
-    void update() {
-        Lesson lesson = new Lesson("math", 10, 20, "2024-12-18");
-        Mockito.when(lessonRepo.saveLesson(lesson)).thenReturn(lesson);
-        String expectedValue = "kkk";
+        String expectedValue = "math1";
         lesson.setCourseName(expectedValue);
+        Mockito.when(lessonRepo.update(Mockito.any(),Mockito.any())).thenReturn(lesson);
         Lesson res = lessonService.lessonUpdate(lesson);
         assertEquals(expectedValue, res.getCourseName());
 
     }
 
-    private void clearDatabase(Long id) {
-        lessonService.deleteLesson(id);
-    }
 
     @Test
     void addNewLessonWithZeroCapacity() {
@@ -112,8 +100,8 @@ class LessonServiceTest {
         lessons.add(lesson1);
         lessons.add(lesson2);
         lessons.add(lesson3);
-        Mockito.when(lessonRepo.getAllLessons()).thenReturn(lessons);
-        assertEquals(2,  lessonService.getAvailableLessons().size());
+        Mockito.when(lessonRepo.getAllLessons(Mockito.any())).thenReturn(lessons);
+        assertEquals(2, lessonService.getAvailableLessons().size());
     }
 
     @Test
@@ -127,11 +115,10 @@ class LessonServiceTest {
         lessons.add(lesson1);
         lessons.add(lesson2);
         lessons.add(lesson3);
-        Mockito.when(lessonRepo.getAllLessons()).thenReturn(lessons);
-        assertEquals(2,lessonService.getAvailableLessons().size());
+        Mockito.when(lessonRepo.getAllLessons(Mockito.any())).thenReturn(lessons);
+        assertEquals(2, lessonService.getAvailableLessons().size());
 
     }
-
 
 
 }

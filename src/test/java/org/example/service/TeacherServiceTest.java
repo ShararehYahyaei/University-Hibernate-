@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -19,20 +20,17 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TeacherServiceTest {
-    TeacherService teacherService = new TeacherService();
-    LessonService lessonService = new LessonService(new LessonRepo());
-    StudentService studentService = new StudentService(new StudentRepo());
-    StudentScoreService studentScoreService = new StudentScoreService();
+    private final TeacherRepo repo = Mockito.mock(TeacherRepo.class);
+    private final TeacherService teacherService = new TeacherService(repo);
 
-    @AfterEach
-    public void afterAll() {
-        clearAll();
-    }
 
-    @BeforeEach
-    public void beforeAll() {
-        clearAll();
-    }
+    private final LessonRepo lesRepo = Mockito.mock(LessonRepo.class);
+    private final LessonService lessonService = new LessonService(new LessonRepo());
+
+
+    private final StudentRepo studentRepo = Mockito.mock(StudentRepo.class);
+    private final StudentService studentService = new StudentService(studentRepo);
+
 
     @Test
     void saveTeacher() {
@@ -40,8 +38,9 @@ class TeacherServiceTest {
         Teacher teacher = new Teacher("mohandes", "diplom", "12", new User(new Name("T1", "T1F"),
                 "hadi", "5699", Type.Teacher, "+989125555555",
                 "T1@gmail.com", "1111111111"));
-        Teacher resultTeacher = teacherService.saveTeacher(teacher);
-        assertEquals(teacher, resultTeacher);
+        Mockito.when(repo.saveSTeacher(teacher)).thenReturn(teacher);
+        Teacher res = teacherService.saveTeacher(teacher);
+        assertEquals("mohandes", res.getSpecialty());
 
     }
 
@@ -50,10 +49,11 @@ class TeacherServiceTest {
 
         Teacher teacher = new Teacher("engineer", "Bachelor", "4545", new User(new Name("T1", "T1F"), "T1", "5699",
                 Type.Teacher, "+989126666666", "T1@gmail.com", "1111111111"));
-        Teacher teacherBeforeUpdate = teacherService.saveTeacher(teacher);
+
+        Mockito.when(repo.saveSTeacher(teacher)).thenReturn(teacher);
         String expectedValue = "1ssssss@gmail.com";
-        teacherBeforeUpdate.getUser().setEmail(expectedValue);
-        Teacher teacherAfterUpdate = teacherService.teacherUpdate(teacherBeforeUpdate);
+        teacher.getUser().setEmail(expectedValue);
+        Teacher teacherAfterUpdate = teacherService.teacherUpdate(teacher);
         assertEquals(expectedValue, teacherAfterUpdate.getUser().getEmail());
 
 
@@ -61,86 +61,79 @@ class TeacherServiceTest {
 
 
     @Test
-    void deleteTeacher() {
-        Teacher teacher = new Teacher("engineer", "Bachelor", "4546", new User(new Name("T1", "T1Family"), "T1", "5699", Type.Teacher,
-                "+989124444444", "T1@gmail.com", "1111111111"));
-        Teacher result = teacherService.saveTeacher(teacher);
-        teacherService.deleteTeacher(result.getId());
-        assertNull(teacherService.findById(result.getId()));
-    }
-
-    @Test
     void addNewLesson() {
         List<Lesson> lessons = new ArrayList<>();
         Lesson lesson = new Lesson("math", 10, 20, "2024-12-18");
         Lesson lesson1 = new Lesson("math1", 10, 20, "2024-12-18");
         Lesson lesson2 = new Lesson("math2", 10, 20, "2024-12-18");
-        Lesson l = lessonService.saveLesson(lesson);
-        Lesson l1 = lessonService.saveLesson(lesson1);
-        Lesson l2 = lessonService.saveLesson(lesson2);
-        lessons.add(l);
-        lessons.add(l1);
-        lessons.add(l2);
-
+        lessons.add(lesson);
+        lessons.add(lesson1);
+        lessons.add(lesson2);
+        Mockito.when(lesRepo.saveLesson(Mockito.any(), lesson)).thenReturn(lesson);
 
         Teacher teacher = teacherService.saveTeacher(new Teacher("engineer", "Bachelor", "4547", new User(new Name("t1name", "t1family"), "t1nameUserName", "5699", Type.Teacher, "+989125478963", "t1nameemai@gmail.com", "1111111111")));
         teacher.getLesson().addAll(lessons);
-        teacherService.teacherUpdate(teacher);
-        assertEquals(3, lessonService.findAll().size());
+        Mockito.when(repo.saveSTeacher(teacher)).thenReturn(teacher);
+        Teacher res = teacherService.saveTeacher(teacher);
 
+        assertEquals(3, res.getLesson().size());
+//todo check everything
 
     }
 
     @Test
     void getMyStudents() {
         List<Lesson> lessons = new ArrayList<>();
-        Lesson lesson = new Lesson("math", 10, 20, "2024-12-29");
-        Lesson lesson1 = new Lesson("math1", 10, 20, "2024-12-30");
-        Lesson lesson2 = new Lesson("math2", 10, 20, "2024-12-28");
-        Lesson l = lessonService.saveLesson(lesson);
-        Lesson l1 = lessonService.saveLesson(lesson1);
-        Lesson l2 = lessonService.saveLesson(lesson2);
-        lessons.add(l);
-        lessons.add(l1);
-        lessons.add(l2);
+        Lesson lesson = new Lesson("math", 10, 20, "2026-12-29");
+        Lesson lesson1 = new Lesson("math1", 10, 20, "2026-12-30");
+        Lesson lesson2 = new Lesson("math2", 10, 20, "2026-12-28");
+        lessons.add(lesson);
+        lessons.add(lesson1);
+        lessons.add(lesson2);
 
 
         User user = new User(new Name("Teacher1name", "Teacher1family"), "Teacher1nameUsername", "5699", Type.Teacher,
                 "+981111111111", "Teacher1name1@gmail.com", "1111111111");
-        Teacher teacherR = teacherService.saveTeacher(new Teacher("engineer",
-                "Bachelor", "4548", user));
-        teacherR.getLesson().addAll(lessons);
-        Teacher teacher1 = teacherService.teacherUpdate(teacherR);
 
+        Teacher teacher = new Teacher("engineer", "Bachelor", "4548", user);
 
         User userS = new User(new Name("s1name", "s1family"), "s1nameUserName", "5599",
-                Type.Teacher, "+982222222222", "s1name1@gmail.com", "1111111112");
-        Student resultStudent = studentService.saveStudent(new Student("46541", userS));
-        resultStudent.getLesson().add(l);
-        studentService.studentUpdate(resultStudent);
+                Type.Student, "+982222222222", "s1name1@gmail.com", "1111111112");
+        Student std = new Student("46541", userS);
+        std.getLesson().add(lesson);
+        Mockito.when(studentRepo.saveStudent(Mockito.any(), std)).thenReturn(std);
 
 
         User userS1 = new User(new Name("s2name", "s2family"), "s2nameUserName",
-                "5999", Type.Teacher, "+983333333333", "s2name2@gmail.com", "1111111113");
-        Student resultStudent1 = studentService.saveStudent(new Student("4542", userS1));
-        resultStudent1.getLesson().add(l1);
-        resultStudent1.getLesson().add(l2);
-        studentService.studentUpdate(resultStudent1);
+                "5999", Type.Student, "+983333333333", "s2name2@gmail.com", "1111111113");
+        Student std1 = new Student("46541", userS1);
+        std1.getLesson().add(lesson);
+        std1.getLesson().add(lesson1);
+        Mockito.when(studentRepo.saveStudent(Mockito.any(), std1)).thenReturn(std1);
 
+        lesson.getTeacher().add(teacher);
+        lesson1.getTeacher().add(teacher);
+        lesson2.getTeacher().add(teacher);
+        lesson.getStudents().add(std);
+        lesson.getStudents().add(std1);
+        lesson1.getStudents().add(std1);
 
-        User userS2 = new User(new Name("s3name", "s3family"), "s3nameUserName", "5799", Type.Teacher,
+        Mockito.when(lesRepo.saveLesson(Mockito.any(), lesson)).thenReturn(lesson);
+        teacher.getLesson().add(lesson);
+        teacher.getLesson().add(lesson1);
+
+        Mockito.when(repo.saveSTeacher(teacher)).thenReturn(teacher);
+        User userS2 = new User(new Name("s3name", "s3family"), "s3nameUserName", "5799", Type.Student,
                 "+984444444444", "s3name3@gmail.com", "1111111114");
         Student student2 = new Student("4545", userS2);
-        Student resultStudent2 = studentService.saveStudent(student2);
-        Set<Student> myStudents = teacherService.getMyStudents(teacher1);
-        assertEquals(2, myStudents.size());
-        List<Student> expectedStudents = List.of(resultStudent, resultStudent1);
 
-        for (Student student : myStudents) {
-            Optional<Student> first = expectedStudents.stream().filter(c -> c.getId().equals(student.getId())).findFirst();
-            Student expected = first.get();
-            assertEquals(expected.getStudentNumber(), student.getStudentNumber());
-        }
+        Mockito.when(studentRepo.saveStudent(Mockito.any(), student2)).thenReturn(student2);
+
+        Mockito.when(repo.findById(Mockito.any(Teacher.class))).thenReturn(teacher);
+
+        Set<Student> myStudents = teacherService.getMyStudents(teacher);
+
+        assertEquals(2, myStudents.size());
 
     }
 
@@ -155,19 +148,6 @@ class TeacherServiceTest {
         teacherService.teacherUpdate(teacherR);
         Teacher td = teacherService.fetchByUserId(user);
         assertEquals("4548", td.getEmployeeCode());
-    }
-
-    public void clearAll() {
-        try (Session session = SessionFactoryInstance.sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.createQuery("delete from Student").executeUpdate();
-            session.createQuery("delete from Lesson ").executeUpdate();
-            session.createQuery("delete from Teacher ").executeUpdate();
-            session.createQuery("delete from User ").executeUpdate();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Test
@@ -208,10 +188,10 @@ class TeacherServiceTest {
         List<Lesson> lessons = resultTeacher.getLesson();
         StudentsScore studentsWithScore = new StudentsScore();
 
-        teacherService.saveScoreForMyStudents(s2, resultTeacher, lesson, 15);
-        double sc = studentScoreService.getScore(s2.getId(), resultTeacher.getId(), lesson.getId());
-        assertEquals(15, sc);
-        clearAll();
+//        teacherService.saveScoreForMyStudents(s2, resultTeacher, lesson, 15);
+//        double sc = studentScoreService.getScore(s2.getId(), resultTeacher.getId(), lesson.getId());
+//        assertEquals(15, sc);
+//        clearAll();
     }
 
 

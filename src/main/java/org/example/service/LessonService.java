@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.*;
+import org.example.exception.ValidationException;
 import org.example.repository.LessonRepo;
 import org.example.util.Validation;
 
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class LessonService {
@@ -19,17 +21,27 @@ public class LessonService {
     }
 
     public Lesson saveLesson(Lesson lesson) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                Validation<Lesson> studentValidation = new Validation<>();
+                var validationErrors = studentValidation.valid(lesson);
+                if (!validationErrors.isEmpty()) {
+                    String errorMessage = String.join(", ", validationErrors);
+                    throw new ValidationException(errorMessage);
+                }
 
-        Validation<Lesson> studentValidation = new Validation<>();
-        Set<String> studentValidationResult = studentValidation.valid(lesson);
-        if (studentValidationResult.isEmpty()) {
-            lessonRepo.saveLesson(lesson);
-        } else {
-            String validationMessage = String.join("", studentValidationResult);
-            throw new org.example.exception.ValidationException(validationMessage);
+                lesson = lessonRepo.saveLesson(session, lesson);
+                session.getTransaction().commit();
+                return lesson;
+
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw e;
+            }
         }
-        return lesson;
     }
+
 
     public Lesson findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
@@ -46,7 +58,14 @@ public class LessonService {
     }
 
     public List<Lesson> findAll() {
-        return lessonRepo.getAllLessons();
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                return lessonRepo.getAllLessons(session);
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void deleteLesson(Long id) {
@@ -55,57 +74,47 @@ public class LessonService {
                 session.beginTransaction();
                 lessonRepo.deleteById(session, id);
                 session.getTransaction().commit();
-
             } catch (Exception e) {
                 session.getTransaction().rollback();
-                throw new RuntimeException(e);
             }
         }
-
     }
-
 
     public List<Lesson> getAvailableLessons() {
-        List<Lesson> availableLessons = new ArrayList<>();
-        List<Lesson> allLessons = lessonRepo.getAllLessons();
-        for (Lesson lesson : allLessons) {
-            if (lesson.getStartDateAsLocalDate().isAfter(LocalDate.now()) &&
-                    lesson.getStudents().size() < lesson.getCapacity()) {
-                availableLessons.add(lesson);
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                List<Lesson> allLessons = lessonRepo.getAllLessons(session);
+                return allLessons
+                        .stream()
+                        .filter(lesson ->
+                                lesson.getStartDateAsLocalDate().isAfter(LocalDate.now()) &&
+                                        lesson.getStudents().size() < lesson.getCapacity())
+                        .collect(Collectors.toList());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+
             }
         }
-        return availableLessons;
-
     }
-
 
     public Lesson lessonUpdate(Lesson lesson) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            session.beginTransaction();
-            Validation<Lesson> lessonValidation = new Validation<>();
-            Set<String> validationMassage = lessonValidation.valid(lesson);
-            if (!validationMassage.isEmpty()) {
-                validationMassage.forEach(System.out::println);
+            try {
+                session.beginTransaction();
+                Validation<Lesson> lessonValidation = new Validation<>();
+                Set<String> validationErrors = lessonValidation.valid(lesson);
+                if (!validationErrors.isEmpty()) {
+                    String errorMessage = String.join(", ", validationErrors);
+                    throw new ValidationException(errorMessage);
+                } else {
+                    Lesson updatedLesson = lessonRepo.update(session, lesson);
+                    session.getTransaction().commit();
+                    return updatedLesson;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            lessonRepo.updateLesson(session, lesson);
-            return lesson;
-        }
-    }
-
-    public List<Student> getStudentsByLesson(Long lessonId) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            session.beginTransaction();
-            List<Student> s = lessonRepo.findStudentsByLessonId(session, lessonId);
-            session.getTransaction().commit();
-            return s;
-
-        } catch (Exception e) {
-            e.getStackTrace();
         }
         return null;
     }
-
-
 }
-
-

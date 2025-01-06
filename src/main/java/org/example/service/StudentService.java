@@ -19,18 +19,26 @@ public class StudentService {
     }
 
     public Student saveStudent(Student student) {
-        Validation<User> userValidation = new Validation<>();
-        Validation<Student> studentValidation = new Validation<>();
-        Set<String> validationUser = userValidation.valid(student.getUser());
-        validationUser.addAll(studentValidation.valid(student));
-        if (!validationUser.isEmpty()) {
-            validationUser.forEach(System.out::println);
-            return null;
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                Validation<User> userValidation = new Validation<>();
+                Validation<Student> studentValidation = new Validation<>();
+                Set<String> validationUser = userValidation.valid(student.getUser());
+                validationUser.addAll(studentValidation.valid(student));
+                if (!validationUser.isEmpty()) {
+                    validationUser.forEach(System.out::println);
+                    return null;
+                }
+                studentRepo.saveStudent(session, student);
+                return student;
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw new RuntimeException(e);
+            }
         }
-        studentRepo.saveStudent(student);
-        return student;
-    }
 
+    }
 
     public Student findById(Long id) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
@@ -73,7 +81,15 @@ public class StudentService {
     }
 
     public Student fetchByUserId(User user) {
-        return studentRepo.fetchStudentByUserId(user);
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            Student student=studentRepo.fetchStudentByUserId( session, user);
+            session.getTransaction().commit();
+            return student;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void deleteStudent(Long id) {

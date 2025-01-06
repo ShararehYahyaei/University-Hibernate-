@@ -5,6 +5,7 @@ import org.example.entity.dto.StudentDto;
 import org.example.entity.dtoLesson.LessonStudentDto;
 import org.example.repository.LessonRepo;
 import org.example.repository.StudentRepo;
+import org.example.repository.TeacherRepo;
 import org.example.service.*;
 
 import java.util.*;
@@ -15,7 +16,7 @@ public class Main {
     static Scanner sc = new Scanner(System.in);
     static StudentService studentService = new StudentService(new StudentRepo());
     static LessonService lessonService = new LessonService(new LessonRepo());
-    static TeacherService teacherService = new TeacherService();
+    static TeacherService teacherService = new TeacherService(new TeacherRepo());
     static UserService userService = new UserService();
     static StudentScoreService studentScore = new StudentScoreService();
 
@@ -108,7 +109,7 @@ public class Main {
 
     private static void showAllLessonsWithStudents(Teacher teacher) {
 
-        Teacher teacherForLesson = teacherService.findById(teacher.getId());
+        Teacher teacherForLesson = teacherService.findById(teacher);
         if (teacherForLesson == null) {
             System.out.println("teacher not found");
         } else {
@@ -304,8 +305,8 @@ public class Main {
                         System.out.println("Operation cancelled.");
                         break;
                     }
-
-                    Teacher teacherForUpdate = teacherService.findById(idForAddLessonForTeacher);
+                    Teacher tec=new Teacher(idForAddLessonForTeacher);
+                    Teacher teacherForUpdate = teacherService.findById(tec);
                     if (teacherForUpdate == null) {
                         System.out.println("Teacher not found. Please try again.");
                         continue;
@@ -597,7 +598,7 @@ public class Main {
             System.out.println("Please enter a score for this student:");
             double score = scanner.nextDouble();
 
-            teacherService.saveScoreForMyStudents(selectedStudent, teacher, selectedLesson, score);
+            // teacherService.saveScoreForMyStudents(selectedStudent, teacher, selectedLesson, score);
             System.out.println("Score saved successfully.");
 
             System.out.println("Do you want to grade another student? (yes/no):");

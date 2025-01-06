@@ -18,7 +18,7 @@ class StudentServiceTest {
     void fetchByUserId() {
         Student student = new Student("4541", new User(new Name("s3name", "s3family"), "hoda", "5799", Type.Student, "+989125878963",
                 "hla@gmail.com", "1111111111"));
-        when(repository.fetchStudentByUserId(student.getUser())).thenReturn(student);
+        when(repository.fetchStudentByUserId(Mockito.any(),student.getUser())).thenReturn(student);
         Student std = studentService.fetchByUserId(student.getUser());
         assertEquals("4541", std.getStudentNumber());
 
