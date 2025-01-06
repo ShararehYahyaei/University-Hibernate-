@@ -3,6 +3,7 @@ package org.example;
 import org.example.entity.*;
 import org.example.entity.dto.StudentDto;
 import org.example.entity.dtoLesson.LessonStudentDto;
+import org.example.repository.LessonRepo;
 import org.example.repository.StudentRepo;
 import org.example.service.*;
 
@@ -13,7 +14,7 @@ import java.util.*;
 public class Main {
     static Scanner sc = new Scanner(System.in);
     static StudentService studentService = new StudentService(new StudentRepo());
-    static LessonService lessonService = new LessonService();
+    static LessonService lessonService = new LessonService(new LessonRepo());
     static TeacherService teacherService = new TeacherService();
     static UserService userService = new UserService();
     static StudentScoreService studentScore = new StudentScoreService();
@@ -401,7 +402,13 @@ public class Main {
         System.out.println("StartDate must follow the format yyyy-MM-dd:");
         String startDate = new Scanner(System.in).nextLine();
         Lesson lesson = new Lesson(courseName, credit, capacity, startDate);
-        return lessonService.saveLesson(lesson);
+        try {
+            return lessonService.saveLesson(lesson);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
     }
 
     public static Lesson updateLesson() {
@@ -607,24 +614,22 @@ public class Main {
         List<Lesson> lessons = student.getLesson();
         if (lessons.isEmpty()) {
             System.out.println("No lessons found for this student.");
-        }else{
-            for(Lesson les :lessons){
-                System.out.println("Course Name is :"+ les.getCourseName());
-                System.out.println("lesson Id is :"+ les.getId());
+        } else {
+            for (Lesson les : lessons) {
+                System.out.println("Course Name is :" + les.getCourseName());
+                System.out.println("lesson Id is :" + les.getId());
             }
             System.out.println("please choose one of them:");
-            Long idLesson=new Scanner(System.in).nextLong();
-           if(idLesson==0){
-               System.out.println("No lessons found for this student.");
-           }
-            else{
-             double score=studentScore.ShowScoreForStudent(student.getId(),idLesson);
-               System.out.println("this is your Score :"+score);
-           }
+            Long idLesson = new Scanner(System.in).nextLong();
+            if (idLesson == 0) {
+                System.out.println("No lessons found for this student.");
+            } else {
+                double score = studentScore.ShowScoreForStudent(student.getId(), idLesson);
+                System.out.println("this is your Score :" + score);
+            }
 
 
         }
-
 
 
     }

@@ -7,7 +7,6 @@ import org.example.entity.User;
 import org.example.entity.dto.StudentDto;
 import org.example.repository.StudentRepo;
 import org.example.util.Validation;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -69,7 +68,6 @@ public class StudentService {
                     , std.getUser().getName().getFirstName()
                     , std.getUser().getName().getLastName()));
         }
-
         return simpleStudentDto;
 
     }

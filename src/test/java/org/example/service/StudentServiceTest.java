@@ -1,11 +1,7 @@
 package org.example.service;
 
-import org.example.config.SessionFactoryInstance;
 import org.example.entity.*;
 import org.example.repository.StudentRepo;
-import org.hibernate.Session;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -27,8 +23,6 @@ class StudentServiceTest {
         assertEquals("4541", std.getStudentNumber());
 
     }
-
-
 
 
 }
