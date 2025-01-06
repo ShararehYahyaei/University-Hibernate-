@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import org.example.config.SessionFactoryInstance;
 import org.example.entity.Lesson;
 import org.example.entity.Student;
 import org.hibernate.Session;
@@ -9,8 +10,17 @@ import java.util.List;
 
 
 public class LessonRepo {
-    public void saveLesson(Session session, Lesson lesson) {
-        session.persist(lesson);
+    public Lesson saveLesson(Lesson lesson) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                session.persist(lesson);
+                return lesson;
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                return null;
+            }
+        }
     }
 
     public int deleteById(Session session, Long id) {
@@ -27,8 +37,15 @@ public class LessonRepo {
 
     }
 
-    public List<Lesson> getAllLessons(Session session) {
-        return session.createQuery("from Lesson", Lesson.class).list();
+    public List<Lesson> getAllLessons() {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                return session.createQuery("from Lesson", Lesson.class).list();
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public Lesson updateLesson(Session session, Lesson lesson) {
@@ -36,6 +53,7 @@ public class LessonRepo {
         session.flush();
         return session.get(Lesson.class, lesson.getId());
     }
+
     public List<Student> findStudentsByLessonId(Session session, Long lessonId) {
         String hql = "SELECT s FROM Student s JOIN s.lessons l WHERE l.id = :lessonId";
         Query query = session.createQuery(hql, Student.class);
