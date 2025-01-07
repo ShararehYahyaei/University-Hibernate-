@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.entity.*;
 import org.example.repository.StudentRepo;
+import org.example.repository.StudentScoreRepo;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -12,7 +13,9 @@ class StudentServiceTest {
 
 
     private final StudentRepo repository = Mockito.mock(StudentRepo.class);
-    private final StudentService studentService = new StudentService(repository);
+    private final StudentScoreRepo stundetScoreRepo=Mockito.mock(StudentScoreRepo.class);
+    private final StudentScoreService studentScoreService = new StudentScoreService(stundetScoreRepo);
+    private final StudentService studentService = new StudentService(repository, studentScoreService);
 
     @Test
     void fetchByUserId() {
@@ -57,4 +60,24 @@ class StudentServiceTest {
         verify(repository, times(1)).deleteById(Mockito.any(),Mockito.eq(student.getId()) );
     }
 
+    @Test
+    void getScoreForStudentBYStuudentIdAndLessonID() {
+        Lesson lesson = new Lesson("math", 10, 20, "2026-12-29");
+
+
+        Teacher teacher = new Teacher("engineer", "Bachelor", "4548", new User(new Name("Teacher1name", "Teacher1family"), "Teacher1nameUsername", "5699", Type.Teacher,
+                "+981111111111", "Teacher1name1@gmail.com", "1111111111"));
+
+        teacher.getLesson().add(lesson);
+
+
+        Student std = new Student("46541", new User(new Name("s1name", "s1family"), "s1nameUserName", "5599",
+                Type.Student, "+982222222222", "s1name1@gmail.com", "1111111112"));
+        lesson.getStudents().add(std);
+
+        Mockito.when(stundetScoreRepo.getLessonScoreByStudent(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(20.00);
+
+
+        assertEquals(20, studentService.getScoreStudentBYStudentIdAndLessonID(std.getId(), lesson.getId()));
+    }
 }

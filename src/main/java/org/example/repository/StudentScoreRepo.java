@@ -25,6 +25,18 @@ public class StudentScoreRepo {
         return Score;
 
     }
+    public double getLessonScoreByStudent(Session session, Long studentId, Long lessonId) {
+
+        double Score = session.createMutationQuery(
+                        "Select score FROM StudentScore ss WHERE ss.student_id = :studentId AND ss.lesson_id = :lessonId "
+                )
+                .setParameter("student_id", studentId)
+                .setParameter("lesson_id", lessonId)
+                .executeUpdate();
+        return Score;
+
+    }
+
 
 
 }

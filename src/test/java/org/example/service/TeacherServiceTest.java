@@ -25,7 +25,7 @@ class TeacherServiceTest {
 
 
     private final StudentRepo studentRepo = Mockito.mock(StudentRepo.class);
-    private final StudentService studentService = new StudentService(studentRepo);
+    private final StudentService studentService = new StudentService(studentRepo,studentScoreService);
 
 
     @Test

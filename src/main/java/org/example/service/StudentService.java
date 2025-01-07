@@ -13,8 +13,10 @@ import java.util.Set;
 
 public class StudentService {
     private final StudentRepo studentRepo;
+    private final StudentScoreService studentScoreService;
 
-    public StudentService(StudentRepo studentRepo) {
+    public StudentService(StudentRepo studentRepo, StudentScoreService studentScoreService) {
+        this.studentScoreService = studentScoreService;
         this.studentRepo = studentRepo;
     }
 
@@ -122,5 +124,13 @@ public class StudentService {
             return student;
         }
     }
+    
+    public double getScoreStudentBYStudentIdAndLessonID(Long studentId, Long lessonId) {
+        double score = studentScoreService.ShowScoreForStudent(studentId, lessonId);
+        return score;
+        
+        
+    }
+
 
 }

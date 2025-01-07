@@ -15,7 +15,7 @@ import java.util.*;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     static Scanner sc = new Scanner(System.in);
-    static StudentService studentService = new StudentService(new StudentRepo());
+    static StudentService studentService = new StudentService(new StudentRepo(),new StudentScoreService(new StudentScoreRepo()));
     static LessonService lessonService = new LessonService(new LessonRepo());
     static StudentScoreService studentScore = new StudentScoreService(new StudentScoreRepo());
     static TeacherService teacherService = new TeacherService(new TeacherRepo(),studentScore);

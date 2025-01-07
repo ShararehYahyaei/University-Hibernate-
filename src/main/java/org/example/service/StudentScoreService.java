@@ -43,19 +43,19 @@ public class StudentScoreService {
             }
         }
     }
-//    public double ShowScoreForStudent(Long studentId,Long LessonId) {
-//        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-//            try {
-//                session.beginTransaction();
-//                double score = stdRepo.showScoreForStudent(session, studentId,LessonId);
-//                session.getTransaction().commit();
-//                return score;
-//            } catch (Exception e) {
-//                session.getTransaction().rollback();
-//                return 0;
-//            }
-//        }
-//
-//    }
+    public double ShowScoreForStudent(Long studentId,Long LessonId) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                double score = stdRepo.getLessonScoreByStudent(session, studentId,LessonId);
+                session.getTransaction().commit();
+                return score;
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                return 0;
+            }
+        }
+
+    }
 
 }
