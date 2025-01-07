@@ -5,7 +5,6 @@ import org.example.repository.StudentRepo;
 import org.example.repository.StudentScoreRepo;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -64,20 +63,15 @@ class StudentServiceTest {
     void getScoreForStudentBYStuudentIdAndLessonID() {
         Lesson lesson = new Lesson("math", 10, 20, "2026-12-29");
 
-
         Teacher teacher = new Teacher("engineer", "Bachelor", "4548", new User(new Name("Teacher1name", "Teacher1family"), "Teacher1nameUsername", "5699", Type.Teacher,
                 "+981111111111", "Teacher1name1@gmail.com", "1111111111"));
 
         teacher.getLesson().add(lesson);
 
-
         Student std = new Student("46541", new User(new Name("s1name", "s1family"), "s1nameUserName", "5599",
                 Type.Student, "+982222222222", "s1name1@gmail.com", "1111111112"));
         lesson.getStudents().add(std);
-
         Mockito.when(stundetScoreRepo.getLessonScoreByStudent(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(20.00);
-
-
         assertEquals(20, studentService.getScoreStudentBYStudentIdAndLessonID(std.getId(), lesson.getId()));
     }
 }

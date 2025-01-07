@@ -18,12 +18,8 @@ class TeacherServiceTest {
     private final StudentScoreRepo stundetScoreRepo=Mockito.mock(StudentScoreRepo.class);
     private final StudentScoreService studentScoreService = new StudentScoreService(stundetScoreRepo);
     private final TeacherService teacherService = new TeacherService(repo, studentScoreService);
-
-
     private final LessonRepo lesRepo = Mockito.mock(LessonRepo.class);
     private final LessonService lessonService = new LessonService(new LessonRepo());
-
-
     private final StudentRepo studentRepo = Mockito.mock(StudentRepo.class);
     private final StudentService studentService = new StudentService(studentRepo,studentScoreService);
 
