@@ -3,25 +3,23 @@ package org.example.service;
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.Lesson;
 import org.example.entity.Student;
-import org.example.entity.StudentsScore;
 import org.example.entity.Teacher;
 import org.example.repository.StudentScoreRepo;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
-
-import java.util.List;
 
 
 public class StudentScoreService {
 
-    private final static StudentScoreRepo stdRepo = new StudentScoreRepo();
+    private final StudentScoreRepo stdRepo;
 
+    public StudentScoreService(StudentScoreRepo stdRepo) {
+        this.stdRepo = stdRepo;
+    }
 
     public void saveScoreForStudent(Student student, Teacher teacher, Lesson lesson, double score) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                stdRepo.saveMainTableRecord(session, student, teacher, lesson, score);
+                stdRepo.studentScore(session, student, teacher, lesson, score);
                 session.getTransaction().commit();
 
             } catch (Exception e) {
@@ -36,7 +34,7 @@ public class StudentScoreService {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                double score = stdRepo.getScoreForStudentTeacherLesson(session, student_id, teacher_id, lesson_id);
+                double score = stdRepo.getLessonScoreByStudent(session, student_id, teacher_id, lesson_id);
                 session.getTransaction().commit();
                 return score;
             } catch (Exception e) {
@@ -45,19 +43,19 @@ public class StudentScoreService {
             }
         }
     }
-    public double ShowScoreForStudent(Long studentId,Long LessonId) {
-        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-                double score = stdRepo.showScoreForStudent(session, studentId,LessonId);
-                session.getTransaction().commit();
-                return score;
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                return 0;
-            }
-        }
-
-    }
+//    public double ShowScoreForStudent(Long studentId,Long LessonId) {
+//        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+//            try {
+//                session.beginTransaction();
+//                double score = stdRepo.showScoreForStudent(session, studentId,LessonId);
+//                session.getTransaction().commit();
+//                return score;
+//            } catch (Exception e) {
+//                session.getTransaction().rollback();
+//                return 0;
+//            }
+//        }
+//
+//    }
 
 }

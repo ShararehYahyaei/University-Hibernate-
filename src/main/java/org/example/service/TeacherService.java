@@ -1,46 +1,64 @@
 package org.example.service;
 
 
-import jakarta.transaction.Transactional;
 import org.example.config.SessionFactoryInstance;
 import org.example.entity.*;
 import org.example.entity.dto.StudentDto;
 import org.example.entity.dtoLesson.LessonStudentDto;
+import org.example.repository.StudentRepo;
 import org.example.repository.TeacherRepo;
 import org.example.util.Validation;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class TeacherService {
     private final TeacherRepo teacherRepo;
+    private final StudentScoreService studentScoreService;
 
-    public TeacherService(TeacherRepo teacherRepo) {
+
+    public TeacherService(TeacherRepo teacherRepo, StudentScoreService studentScoreService) {
         this.teacherRepo = teacherRepo;
+        this.studentScoreService = studentScoreService;
     }
 
-    @Transactional
+
     public Teacher saveTeacher(Teacher teacher) {
-        Validation<User> userValidation = new Validation<>();
-        Validation<Teacher> studentValidation = new Validation<>();
-        Set<String> validationUser = userValidation.valid(teacher.getUser());
-        validationUser.addAll(studentValidation.valid(teacher));
-        if (!validationUser.isEmpty()) {
-            teacherRepo.saveSTeacher(teacher);
-            return teacher;
-        } else {
-            String validationMessage = String.join("", validationUser);
-            throw new org.example.exception.ValidationException(validationMessage);
-
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                Validation<User> userValidation = new Validation<>();
+                Validation<Teacher> studentValidation = new Validation<>();
+                Set<String> validationUser = userValidation.valid(teacher.getUser());
+                validationUser.addAll(studentValidation.valid(teacher));
+                if (!validationUser.isEmpty()) {
+                    validationUser.forEach(System.out::println);
+                    return null;
+                }
+                return teacherRepo.saveSTeacher(session, teacher);
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw new RuntimeException(e);
+            }
         }
+
     }
 
-    public Teacher findById(Teacher teacher) {
-        return teacherRepo.findById(teacher);
-
+    public Teacher findById(Long id) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                Teacher teacher = teacherRepo.findById(session, id);
+                session.getTransaction().commit();
+                return teacher;
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public Teacher teacherUpdate(Teacher teacher) {
@@ -53,19 +71,27 @@ public class TeacherService {
             if (!validationUser.isEmpty()) {
                 validationUser.forEach(System.out::println);
             }
-            teacherRepo.updateTeacher(session, teacher);
-            return teacher;
+            return teacherRepo.updateTeacher(session, teacher);
+
         }
     }
 
     public Set<Student> getMyStudents(Teacher teacher) {
-        Teacher teacherResult = teacherRepo.findById(teacher);
-        List<Lesson>lessons=teacherResult.getLesson();
-        Set<Student> students = new HashSet<>();
-        for (int i = 0; i < lessons.size(); i++) {
-          lessons.get(i).getStudents().forEach(student -> students.add(student));
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            Teacher teacherResult = teacherRepo.findById(session, teacher.getId());
+            Set<Student> students = teacherResult
+                    .getLesson()
+                    .stream()
+                    .flatMap(lesson ->
+                            lesson.getStudents()
+                                    .stream())
+                    .collect(Collectors.toSet());
+            return students;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return students;
+        return null;
     }
 
 
@@ -101,10 +127,37 @@ public class TeacherService {
         }
     }
 
-    public void deleteTeacher(Teacher teacher) {
-        Teacher res = findById(teacher);
-        teacherRepo.deleteByEntity(res);
+    public void deleteTeacher(Long id) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+                Teacher teacher = teacherRepo.findById(session, id);
+                teacherRepo.deleteByEntity(session, teacher);
+                session.getTransaction().commit();
+
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                throw new RuntimeException(e);
+            }
+
+        }
+
     }
+
+
+    public List<Lesson> getAllLessonsForATeacher(Teacher teacher) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            Teacher teacherResult = teacherRepo.findById(session, teacher.getId());
+            List<Lesson> lstOfLessons = teacherResult.getLesson();
+            session.getTransaction().commit();
+            return lstOfLessons;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public List<org.example.entity.dtoTeacher.TeacherDto> getAllTeachersWithSOmeProperties() {
         List<Teacher> teachers = findAll();
@@ -122,20 +175,24 @@ public class TeacherService {
     }
 
     public Teacher fetchByUserId(User user) {
-        Teacher teacher = teacherRepo.fetchTeacherByUserId(user);
-        return teacher;
-    }
-
-    public List<Student> getMyListStudents(Teacher teacher) {
-        Teacher teacherResult = teacherRepo.findById(teacher);
-        List<Student> students = new ArrayList<>();
-        for (Lesson l : teacherResult.getLesson()) {
-            students.addAll(l.getStudents());
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            Teacher teacher = teacherRepo.fetchTeacherByUserId(session, user);
+            session.getTransaction().commit();
+            return teacher;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return students;
+        return null;
     }
-}
 
-//    public void saveScoreForMyStudents(Student student, Teacher teacher, Lesson lesson, double score) {
-//        stdScore.saveScoreForStudent(student, teacher, lesson, score);
-//    }
+    public void saveScoreForMyStudents(Student student, Teacher teacher, Lesson lesson, double score) {
+        studentScoreService.saveScoreForStudent(student, teacher, lesson, score);
+    }
+
+    public double getScoreForStudent(Student student, Teacher teacher, Lesson lesson) {
+        double score = studentScoreService.getScore(student.getId(), teacher.getId(), lesson.getId());
+        return score;
+    }
+
+}

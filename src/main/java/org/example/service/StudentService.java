@@ -30,7 +30,7 @@ public class StudentService {
                     validationUser.forEach(System.out::println);
                     return null;
                 }
-                studentRepo.saveStudent(session, student);
+                student = studentRepo.saveStudent(session, student);
                 return student;
             } catch (Exception e) {
                 session.getTransaction().rollback();
@@ -83,10 +83,10 @@ public class StudentService {
     public Student fetchByUserId(User user) {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             session.beginTransaction();
-            Student student=studentRepo.fetchStudentByUserId( session, user);
+            Student student = studentRepo.fetchStudentByUserId(session, user);
             session.getTransaction().commit();
             return student;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -97,7 +97,7 @@ public class StudentService {
             try {
                 session.beginTransaction();
                 Student student = studentRepo.findById(session, id);
-                studentRepo.deleteByEntity(session, student);
+                studentRepo.deleteById(session, id);
                 session.getTransaction().commit();
 
             } catch (Exception e) {
@@ -118,7 +118,7 @@ public class StudentService {
             if (!validationUser.isEmpty()) {
                 validationUser.forEach(System.out::println);
             }
-            studentRepo.updatestudent(session, student);
+            student = studentRepo.updatestudent(session, student);
             return student;
         }
     }

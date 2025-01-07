@@ -1,7 +1,7 @@
 package org.example.repository;
 
 
-import org.example.config.SessionFactoryInstance;
+
 import org.example.entity.Student;
 import org.example.entity.User;
 import org.hibernate.Session;
@@ -16,10 +16,14 @@ public class StudentRepo {
         return student;
     }
 
-    public void deleteByEntity(Session session, Student student) {
-        session.remove(student);
-    }
+    public void deleteById(Session session,Long id) {
+        session.createMutationQuery(
+                        "DELETE FROM Student s WHERE s.id = :id"
+                )
+                .setParameter("id", id)
+                .executeUpdate();
 
+    }
 
     public Student findById(Session session, Long id) {
         return session.get(Student.class, id);

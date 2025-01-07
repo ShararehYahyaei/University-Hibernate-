@@ -10,10 +10,11 @@ public class SessionFactoryInstance {
     static {
         sessionFactory = new Configuration()
                 .configure("hibernate.cfg.xml")
-             .addAnnotatedClass(Student.class)
+                .addAnnotatedClass(Student.class)
                 .addAnnotatedClass(Teacher.class)
                 .addAnnotatedClass(Lesson.class)
                 .addAnnotatedClass(User.class)
+                .addAnnotatedClass(StudentScore.class)
 
                 .buildSessionFactory();
 

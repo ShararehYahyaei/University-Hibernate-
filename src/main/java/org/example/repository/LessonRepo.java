@@ -13,7 +13,6 @@ public class LessonRepo {
             }
 
     public void deleteById(Session session,Long id) {
-
                 session.createMutationQuery(
                                 "DELETE FROM Lesson l WHERE l.id = :id"
                         )

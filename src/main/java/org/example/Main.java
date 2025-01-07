@@ -5,6 +5,7 @@ import org.example.entity.dto.StudentDto;
 import org.example.entity.dtoLesson.LessonStudentDto;
 import org.example.repository.LessonRepo;
 import org.example.repository.StudentRepo;
+import org.example.repository.StudentScoreRepo;
 import org.example.repository.TeacherRepo;
 import org.example.service.*;
 
@@ -16,9 +17,10 @@ public class Main {
     static Scanner sc = new Scanner(System.in);
     static StudentService studentService = new StudentService(new StudentRepo());
     static LessonService lessonService = new LessonService(new LessonRepo());
-    static TeacherService teacherService = new TeacherService(new TeacherRepo());
+    static StudentScoreService studentScore = new StudentScoreService(new StudentScoreRepo());
+    static TeacherService teacherService = new TeacherService(new TeacherRepo(),studentScore);
     static UserService userService = new UserService();
-    static StudentScoreService studentScore = new StudentScoreService();
+
 
 
     public static void saveAdmin() {
@@ -109,7 +111,7 @@ public class Main {
 
     private static void showAllLessonsWithStudents(Teacher teacher) {
 
-        Teacher teacherForLesson = teacherService.findById(teacher);
+        Teacher teacherForLesson = teacherService.findById(teacher.getId());
         if (teacherForLesson == null) {
             System.out.println("teacher not found");
         } else {
@@ -305,8 +307,8 @@ public class Main {
                         System.out.println("Operation cancelled.");
                         break;
                     }
-                    Teacher tec=new Teacher(idForAddLessonForTeacher);
-                    Teacher teacherForUpdate = teacherService.findById(tec);
+
+                    Teacher teacherForUpdate = teacherService.findById(idForAddLessonForTeacher);
                     if (teacherForUpdate == null) {
                         System.out.println("Teacher not found. Please try again.");
                         continue;
@@ -598,7 +600,7 @@ public class Main {
             System.out.println("Please enter a score for this student:");
             double score = scanner.nextDouble();
 
-            // teacherService.saveScoreForMyStudents(selectedStudent, teacher, selectedLesson, score);
+            teacherService.saveScoreForMyStudents(selectedStudent, teacher, selectedLesson, score);
             System.out.println("Score saved successfully.");
 
             System.out.println("Do you want to grade another student? (yes/no):");
@@ -625,8 +627,8 @@ public class Main {
             if (idLesson == 0) {
                 System.out.println("No lessons found for this student.");
             } else {
-                double score = studentScore.ShowScoreForStudent(student.getId(), idLesson);
-                System.out.println("this is your Score :" + score);
+              //  double score = studentScore.getScore(student.getId(), idLesson);
+              //  System.out.println("this is your Score :" + score);
             }
 
 

@@ -3,15 +3,13 @@ package org.example.service;
 import org.example.entity.*;
 import org.example.exception.ValidationException;
 import org.example.repository.LessonRepo;
-import org.example.repository.StudentRepo;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import java.util.ArrayList;
 import java.util.List;
-
-
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 
 class LessonServiceTest {
@@ -35,8 +33,6 @@ class LessonServiceTest {
     @Test
     void when_there_are_two_lessons_but_one_of_them_full_of_capacity_then_only_one_is_expected() {
 
-        StudentRepo studentRepo = Mockito.mock(StudentRepo.class);
-
         List<Lesson> lessons = new ArrayList<>();
         Lesson lesson = new Lesson("math", 10, 3, "2026-01-01");
         lessons.add(lesson);
@@ -56,7 +52,6 @@ class LessonServiceTest {
 
         Student student2 = new Student("4541", new User(new Name("s3name", "s3family"), "hoda", "5799", Type.Student, "+989125878963",
                 "hla@gmail.com", "1111111111"));
-
 
 
         lesson.getStudents().add(student);
@@ -82,7 +77,7 @@ class LessonServiceTest {
 
         String expectedValue = "math1";
         lesson.setCourseName(expectedValue);
-        Mockito.when(lessonRepo.update(Mockito.any(),Mockito.any())).thenReturn(lesson);
+        Mockito.when(lessonRepo.update(Mockito.any(), Mockito.any())).thenReturn(lesson);
         Lesson res = lessonService.lessonUpdate(lesson);
         assertEquals(expectedValue, res.getCourseName());
 
@@ -117,6 +112,22 @@ class LessonServiceTest {
         lessons.add(lesson3);
         Mockito.when(lessonRepo.getAllLessons(Mockito.any())).thenReturn(lessons);
         assertEquals(2, lessonService.getAvailableLessons().size());
+
+    }
+
+    @Test
+    void saveLesson() {
+        Lesson lesson = new Lesson("math", 10, 20, "2026-11-15");
+        Mockito.when(lessonRepo.saveLesson(Mockito.any(),Mockito.any(Lesson.class))).thenReturn(lesson);
+        Lesson res = lessonService.saveLesson(lesson);
+        assertEquals(lesson, res);
+    }
+
+    @Test
+    void deleteLesson() {
+        Lesson lesson = new Lesson("math", 10, 20, "2026-12-18");
+        lessonService.deleteLesson(lesson.getId());
+        verify(lessonRepo,times(1)).deleteById(Mockito.any(), Mockito.eq(lesson.getId()));
 
     }
 
