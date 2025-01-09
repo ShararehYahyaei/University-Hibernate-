@@ -1,16 +1,14 @@
 package org.example.service;
 
-import org.example.config.SessionFactoryInstance;
 import org.example.entity.Name;
 import org.example.entity.Type;
 import org.example.entity.User;
+import org.example.exception.AuthenticationException;
 import org.example.repository.UserRepo;
-import org.hibernate.Session;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import static org.example.exception.MessageException.AUTHENTICATION_EXCEPTION;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
@@ -31,18 +29,24 @@ class UserServiceTest {
 
 
     @Test
-    void check_username_and_Password_with_wrong_format() {
+    void given_empty_username_then_AuthenticationException_is_expected() {
         String emptyUsername = "  ";
-        String emptyPassword = "";
-
-        IllegalArgumentException exception1 = assertThrows(IllegalArgumentException.class,
+        AuthenticationException exception = assertThrows(AuthenticationException.class,
                 () -> userService.checkUsernameAndPassword(emptyUsername, "validPassword"));
-        assertEquals("Username or password cannot be null or empty", exception1.getMessage());
-        IllegalArgumentException exception2 = assertThrows(IllegalArgumentException.class,
-                () -> userService.checkUsernameAndPassword("validUsername", emptyPassword));
-        assertEquals("Username or password cannot be null or empty", exception2.getMessage());
+        assertEquals(AUTHENTICATION_EXCEPTION, exception.getMessage());
 
     }
+    @Test
+    void given_empty_password_then_AuthenticationException_is_expected() {
+        String username = "validUsername";
+        String emptyPassword = "";
+
+        AuthenticationException exception = assertThrows(AuthenticationException.class,
+                () -> userService.checkUsernameAndPassword(username, emptyPassword));
+        assertEquals(AUTHENTICATION_EXCEPTION, exception.getMessage());
+
+    }
+
 
 
 }

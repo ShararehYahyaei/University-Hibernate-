@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.config.SessionFactoryInstance;
 
 import org.example.entity.User;
+import org.example.exception.AuthenticationException;
 import org.example.repository.UserRepo;
 
 public class UserService {
@@ -43,7 +44,7 @@ public class UserService {
 
     public User checkUsernameAndPassword(String userName, String password) {
         if (userName.trim().isEmpty() || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username or password cannot be null or empty");
+            throw new AuthenticationException();
         }
         return userrepo.checkUsernameAndPassword(userName, password);
 
