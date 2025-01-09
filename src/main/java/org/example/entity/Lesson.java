@@ -1,17 +1,15 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
-import jakarta.validation.constraints.Pattern;
-import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.example.exception.MessageValidaton.INVALID_COURSE_NAME;
+import static org.example.exception.MessageValidaton.*;
 
 
 @Entity
@@ -36,7 +34,8 @@ public class Lesson {
     @NotNull(message = INVALID_COURSE_NAME)
     private String courseName;
     @Column(nullable = false)
-    @NotNull(message = "Credit must not be null")
+    @Min(value = 1, message = invalid_credit_Lesson_with_minus)
+    @Max(value = 3, message = INVALID_CREDIT_Lesson_with_inavlid_data)
     private int credit;
     @Column(nullable = false)
     @NotNull(message = "Capacity must not be null")

@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.example.exception.MessageValidaton.INVALID_COURSE_NAME;
+import static org.example.exception.MessageValidaton.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -67,15 +67,30 @@ class LessonServiceTest {
 
     @Test
     void given_the_empty_courses_then_throw_exception_is_expected() {
-        Lesson lesson = new Lesson(null, 10, 3, "2023-01-01");
+        Lesson lesson = new Lesson(null, 2, 3, "2023-01-01");
         ValidationException exception = assertThrows(ValidationException.class, () -> lessonService.saveLesson(lesson));
         assertEquals(INVALID_COURSE_NAME, exception.getMessage());
 
     }
+    @Test
+    void given_the_minus_credit_then_throw_exception_is_expected() {
+        Lesson lesson = new Lesson("math", -1, 3, "2023-01-01");
+        ValidationException exception = assertThrows(ValidationException.class, () -> lessonService.saveLesson(lesson));
+        assertEquals(invalid_credit_Lesson_with_minus, exception.getMessage());
+
+    }
+    @Test
+    void given_the_invalid_credit_then_throw_exception_is_expected() {
+        Lesson lesson = new Lesson("math", 12, 3, "2023-01-01");
+        ValidationException exception = assertThrows(ValidationException.class, () -> lessonService.saveLesson(lesson));
+        assertEquals(INVALID_CREDIT_Lesson_with_inavlid_data, exception.getMessage());
+
+    }
+
 
     @Test
     void given_a_lesson_then_updated_exception_result() {
-        Lesson lesson = new Lesson("math", 10, 20, "2026-12-18");
+        Lesson lesson = new Lesson("math", 2, 20, "2026-12-18");
 
         String expectedValue = "math1";
         lesson.setCourseName(expectedValue);
@@ -119,7 +134,7 @@ class LessonServiceTest {
 
     @Test
     void saveLesson() {
-        Lesson lesson = new Lesson("math", 10, 20, "2026-11-15");
+        Lesson lesson = new Lesson("math", 3, 20, "2026-11-15");
         Mockito.when(lessonRepo.saveLesson(Mockito.any(),Mockito.any(Lesson.class))).thenReturn(lesson);
         Lesson res = lessonService.saveLesson(lesson);
         assertEquals(lesson, res);
@@ -127,7 +142,7 @@ class LessonServiceTest {
 
     @Test
     void deleteLesson() {
-        Lesson lesson = new Lesson("math", 10, 20, "2026-12-18");
+        Lesson lesson = new Lesson("math", 3, 20, "2026-12-18");
         lessonService.deleteLesson(lesson.getId());
         verify(lessonRepo,times(1)).deleteById(Mockito.any(), Mockito.eq(lesson.getId()));
 
