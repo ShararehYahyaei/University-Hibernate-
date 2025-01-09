@@ -103,10 +103,6 @@ class TeacherServiceTest {
     }
 
     @Test
-    void name() {
-    }
-
-    @Test
     void given_a_userId_then_received_user_expected() {
         User user = new User(new Name("Teacher1name", "Teacher1family"),
                 "Teacher1nameUsername",

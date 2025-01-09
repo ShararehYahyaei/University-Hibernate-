@@ -3,10 +3,7 @@ package org.example;
 import org.example.entity.*;
 import org.example.entity.dto.StudentDto;
 import org.example.entity.dtoLesson.LessonStudentDto;
-import org.example.repository.LessonRepo;
-import org.example.repository.StudentRepo;
-import org.example.repository.StudentScoreRepo;
-import org.example.repository.TeacherRepo;
+import org.example.repository.*;
 import org.example.service.*;
 
 import java.util.*;
@@ -19,7 +16,7 @@ public class Main {
     static LessonService lessonService = new LessonService(new LessonRepo());
     static StudentScoreService studentScore = new StudentScoreService(new StudentScoreRepo());
     static TeacherService teacherService = new TeacherService(new TeacherRepo(),studentScore);
-    static UserService userService = new UserService();
+    static UserService userService = new UserService(new UserRepo());
 
 
 

@@ -98,7 +98,6 @@ public class StudentService {
         try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
-                Student student = studentRepo.findById(session, id);
                 studentRepo.deleteById(session, id);
                 session.getTransaction().commit();
 

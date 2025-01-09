@@ -60,7 +60,7 @@ class StudentServiceTest {
     }
 
     @Test
-    void getScoreForStudentBYStuudentIdAndLessonID() {
+    void getScoreForStudentBYStudentIdAndLessonID() {
         Lesson lesson = new Lesson("math", 10, 20, "2026-12-29");
 
         Teacher teacher = new Teacher("engineer", "Bachelor", "4548", new User(new Name("Teacher1name", "Teacher1family"), "Teacher1nameUsername", "5699", Type.Teacher,
