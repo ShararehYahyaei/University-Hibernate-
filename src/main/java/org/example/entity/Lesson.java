@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.exception.MessageValidaton.INVALID_COURSE_NAME;
+
 
 @Entity
 @EqualsAndHashCode
@@ -31,7 +33,7 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    @NotNull(message = "CourseName must not be null")
+    @NotNull(message = INVALID_COURSE_NAME)
     private String courseName;
     @Column(nullable = false)
     @NotNull(message = "Credit must not be null")

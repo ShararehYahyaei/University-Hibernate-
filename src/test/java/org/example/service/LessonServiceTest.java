@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.example.exception.MessageValidaton.INVALID_COURSE_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,10 +66,10 @@ class LessonServiceTest {
     }
 
     @Test
-    void save_method_with_exception_result() {
+    void given_the_empty_courses_then_throw_exception_is_expected() {
         Lesson lesson = new Lesson(null, 10, 3, "2023-01-01");
         ValidationException exception = assertThrows(ValidationException.class, () -> lessonService.saveLesson(lesson));
-        assertEquals("CourseName must not be null", exception.getMessage());
+        assertEquals(INVALID_COURSE_NAME, exception.getMessage());
 
     }
 
