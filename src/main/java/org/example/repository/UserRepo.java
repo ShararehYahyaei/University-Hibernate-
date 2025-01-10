@@ -45,5 +45,17 @@ public class UserRepo {
         return false;
 
     }
+    public boolean checkPasswordIsExisted(Session session, String password) {
+        Long count;
+        count = session.createQuery(
+                        "SELECT COUNT(u.id) FROM User u WHERE u.password = :password", Long.class)
+                .setParameter("password", password)
+                .uniqueResult();
+        if (count > 0) {
+            return true;
+        }
+        return false;
+
+    }
 
 }

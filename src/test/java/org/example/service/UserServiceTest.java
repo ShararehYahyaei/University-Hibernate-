@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.example.exception.MessageException.AUTHENTICATION_EXCEPTION;
+import static org.example.exception.MessageValidaton.PASSWORD_DUPLICATED;
 import static org.example.exception.MessageValidaton.USERNAME_DUPLICATED;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,7 +59,16 @@ class UserServiceTest {
                 () -> userService.isExistedUserName("username"));
         assertEquals(USERNAME_DUPLICATED, exception.getMessage());
 
+    }    @Test
+    void given_duplicated_password_then_getting_error_is_expected() {
+
+        Mockito.when(userRepo.checkPasswordIsExisted(Mockito.any(), Mockito.any())).thenReturn(true);
+        ValidationException exception = assertThrows(ValidationException.class,
+                () -> userService.isExistedPassword("password"));
+        assertEquals(PASSWORD_DUPLICATED, exception.getMessage());
+
     }
+
 
 
 }

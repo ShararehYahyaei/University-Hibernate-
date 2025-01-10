@@ -7,6 +7,7 @@ import org.example.exception.AuthenticationException;
 import org.example.exception.ValidationException;
 import org.example.repository.UserRepo;
 
+import static org.example.exception.MessageValidaton.PASSWORD_DUPLICATED;
 import static org.example.exception.MessageValidaton.USERNAME_DUPLICATED;
 
 public class UserService {
@@ -57,6 +58,19 @@ public class UserService {
             boolean count = userrepo.checkUserNameIsExisted(session, username);
             if (count) {
                 throw new ValidationException(USERNAME_DUPLICATED);
+            }else {
+                return false;
+            }
+
+        }
+
+    }
+    public boolean isExistedPassword(String password) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            boolean count = userrepo.checkPasswordIsExisted(session, password);
+            if (count) {
+                throw new ValidationException(PASSWORD_DUPLICATED);
             }else {
                 return false;
             }
