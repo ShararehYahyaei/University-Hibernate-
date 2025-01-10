@@ -23,13 +23,27 @@ public class UserRepo {
     public User checkUsernameAndPassword(String userName, String password) {
         try (Session session1 = SessionFactoryInstance.sessionFactory.openSession()) {
             session1.beginTransaction();
-            String hql="from User where userName=:userName ";
+            String hql = "from User where userName=:userName ";
             User user = session1.createQuery(hql, User.class).setParameter("userName", userName).getSingleResultOrNull();
-            if (user!=null&&user.getPassword().equals(password)) {
+            if (user != null && user.getPassword().equals(password)) {
                 return user;
             }
 
         }
-     return null;
+        return null;
     }
+
+    public boolean checkUserNameIsExisted(Session session, String userName) {
+        Long count;
+        count = session.createQuery(
+                        "SELECT COUNT(u.id) FROM User u WHERE u.userName = :userName", Long.class)
+                .setParameter("userName", userName)
+                .uniqueResult();
+        if (count > 0) {
+            return true;
+        }
+        return false;
+
+    }
+
 }

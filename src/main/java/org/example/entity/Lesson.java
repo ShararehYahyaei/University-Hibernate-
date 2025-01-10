@@ -38,7 +38,8 @@ public class Lesson {
     @Max(value = 3, message = INVALID_CREDIT_Lesson_with_inavlid_data)
     private int credit;
     @Column(nullable = false)
-    @NotNull(message = "Capacity must not be null")
+    @NotNull(message = INVALID_CAPACITY)
+    @Min(value = 1, message = INVALID_CAPACITY)
     private int capacity;
     @Column(nullable = false)
     @NotNull(message = "StartDate must not be null.")

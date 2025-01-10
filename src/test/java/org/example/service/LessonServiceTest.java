@@ -86,6 +86,14 @@ class LessonServiceTest {
         assertEquals(INVALID_CREDIT_Lesson_with_inavlid_data, exception.getMessage());
 
     }
+    @Test
+    void given_the_invalid_capacity_then_throw_exception_is_expected() {
+        Lesson lesson = new Lesson("math", 3, -1, "2023-01-01");
+        ValidationException exception = assertThrows(ValidationException.class, () -> lessonService.saveLesson(lesson));
+        assertEquals(INVALID_CAPACITY, exception.getMessage());
+
+    }
+
 
 
     @Test

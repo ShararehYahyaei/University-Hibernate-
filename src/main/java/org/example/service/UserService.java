@@ -4,7 +4,10 @@ import org.example.config.SessionFactoryInstance;
 
 import org.example.entity.User;
 import org.example.exception.AuthenticationException;
+import org.example.exception.ValidationException;
 import org.example.repository.UserRepo;
+
+import static org.example.exception.MessageValidaton.USERNAME_DUPLICATED;
 
 public class UserService {
 
@@ -41,12 +44,25 @@ public class UserService {
         }
     }
 
-
     public User checkUsernameAndPassword(String userName, String password) {
         if (userName.trim().isEmpty() || password.trim().isEmpty()) {
             throw new AuthenticationException();
         }
         return userrepo.checkUsernameAndPassword(userName, password);
+    }
+
+    public boolean isExistedUserName(String username) {
+        try (var session = SessionFactoryInstance.sessionFactory.openSession()) {
+            session.beginTransaction();
+            boolean count = userrepo.checkUserNameIsExisted(session, username);
+            if (count) {
+                throw new ValidationException(USERNAME_DUPLICATED);
+            }else {
+                return false;
+            }
+
+        }
 
     }
+
 }
