@@ -94,8 +94,6 @@ class LessonServiceTest {
 
     }
 
-
-
     @Test
     void given_a_lesson_then_updated_exception_result() {
         Lesson lesson = new Lesson("math", 2, 20, "2026-12-18");

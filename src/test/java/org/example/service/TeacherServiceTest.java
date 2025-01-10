@@ -111,7 +111,6 @@ class TeacherServiceTest {
         Teacher teacherR = teacherService.saveTeacher(new Teacher("engineer",
                 "Bachelor", "4548", user));
 
-
         Mockito.when(repo.fetchTeacherByUserId(Mockito.any(), Mockito.any())).thenReturn(teacherR);
         Teacher teacher = teacherService.fetchByUserId(user);
         assertEquals(teacher, teacherR);
