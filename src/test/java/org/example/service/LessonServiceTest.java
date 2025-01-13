@@ -8,10 +8,11 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import static org.example.exception.MessageValidaton.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
 
 
 class LessonServiceTest {
@@ -141,7 +142,7 @@ class LessonServiceTest {
     @Test
     void saveLesson() {
         Lesson lesson = new Lesson("math", 3, 20, "2026-11-15");
-        Mockito.when(lessonRepo.saveLesson(Mockito.any(),Mockito.any(Lesson.class))).thenReturn(lesson);
+        Mockito.when(lessonRepo.saveLesson(Mockito.any(),Mockito.any())).thenReturn(lesson);
         Lesson res = lessonService.saveLesson(lesson);
         assertEquals(lesson, res);
     }

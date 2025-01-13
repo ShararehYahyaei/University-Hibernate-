@@ -38,8 +38,6 @@ public class StudentRepo {
         session.flush();
         return session.get(Student.class, student.getId());
     }
-
-
     public Student fetchStudentByUserId(Session session, User user) {
         Student student = session.createQuery("from Student where user = :user", Student.class)
                 .setParameter("user", user).getSingleResult();

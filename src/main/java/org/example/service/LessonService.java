@@ -5,12 +5,10 @@ import org.example.entity.*;
 import org.example.exception.ValidationException;
 import org.example.repository.LessonRepo;
 import org.example.util.Validation;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
 
 
 public class LessonService {
@@ -89,7 +87,7 @@ public class LessonService {
                         .filter(lesson ->
                                 lesson.getStartDateAsLocalDate().isAfter(LocalDate.now()) &&
                                         lesson.getStudents().size() < lesson.getCapacity())
-                        .collect(Collectors.toList());
+                        .toList();
             } catch (Exception e) {
                 throw new RuntimeException(e);
 

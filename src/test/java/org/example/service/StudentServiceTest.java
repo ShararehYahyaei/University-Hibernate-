@@ -6,6 +6,7 @@ import org.example.repository.StudentScoreRepo;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 
 class StudentServiceTest {
@@ -33,7 +34,7 @@ class StudentServiceTest {
         name.setLastName("Yahayei");
         User user = new User(name, "hadi", "5699", Type.Student, "+989125478998", "ha@gmail.com", "1111111111");
         Student student = new Student("4545", user);
-        Mockito.when(repository.saveStudent(Mockito.any(),Mockito.any(Student.class))).thenReturn(student);
+        when(repository.saveStudent(Mockito.any(),Mockito.any(Student.class))).thenReturn(student);
         assertEquals(student, studentService.saveStudent(student));
     }
 
@@ -45,7 +46,7 @@ class StudentServiceTest {
                         "+989124577788", "ha@gmail.com", "1111111111"));
         String expectedEmail = "3ssssss@gmail.com";
         student.getUser().setEmail(expectedEmail);
-        Mockito.when(repository.updatestudent(Mockito.any(), Mockito.any())).thenReturn(student);
+        when(repository.updatestudent(Mockito.any(), Mockito.any())).thenReturn(student);
         Student resultStudent = studentService.studentUpdate(student);
         assertEquals(expectedEmail, resultStudent.getUser().getEmail());
 
@@ -67,11 +68,10 @@ class StudentServiceTest {
                 "+981111111111", "Teacher1name1@gmail.com", "1111111111"));
 
         teacher.getLesson().add(lesson);
-
         Student std = new Student("46541", new User(new Name("s1name", "s1family"), "s1nameUserName", "5599",
                 Type.Student, "+982222222222", "s1name1@gmail.com", "1111111112"));
         lesson.getStudents().add(std);
-        Mockito.when(stundetScoreRepo.getLessonScoreByStudent(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(20.00);
+        when(stundetScoreRepo.getLessonScoreByStudent(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(20.00);
         assertEquals(20, studentService.getScoreStudentBYStudentIdAndLessonID(std.getId(), lesson.getId()));
     }
 }

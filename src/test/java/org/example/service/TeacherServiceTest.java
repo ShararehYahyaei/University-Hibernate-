@@ -78,16 +78,12 @@ class TeacherServiceTest {
         lessons.add(lesson1);
         lessons.add(lesson2);
 
-
         Teacher teacher = new Teacher("engineer", "Bachelor", "4548", new User(new Name("Teacher1name", "Teacher1family"), "Teacher1nameUsername", "5699", Type.Teacher,
                 "+981111111111", "Teacher1name1@gmail.com", "1111111111"));
 
         teacher.getLesson().addAll(lessons);
-
-
         Student std = new Student("46541", new User(new Name("s1name", "s1family"), "s1nameUserName", "5599",
                 Type.Student, "+982222222222", "s1name1@gmail.com", "1111111112"));
-
 
         Student std1 = new Student("46541", new User(new Name("s2name", "s2family"), "s2nameUserName",
                 "5999", Type.Student, "+983333333333", "s2name2@gmail.com", "1111111113"));
@@ -121,20 +117,16 @@ class TeacherServiceTest {
 
         Lesson lesson = new Lesson("math", 10, 20, "2026-12-29");
 
-
         Teacher teacher = new Teacher("engineer", "Bachelor", "4548", new User(new Name("Teacher1name", "Teacher1family"), "Teacher1nameUsername", "5699", Type.Teacher,
                 "+981111111111", "Teacher1name1@gmail.com", "1111111111"));
 
         teacher.getLesson().add(lesson);
 
-
         Student std = new Student("46541", new User(new Name("s1name", "s1family"), "s1nameUserName", "5599",
                 Type.Student, "+982222222222", "s1name1@gmail.com", "1111111112"));
 
-
         Mockito.when(stundetScoreRepo.getLessonScoreByStudent(Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(20.00);
         lesson.getStudents().add(std);
-
         assertEquals(20, teacherService.getScoreForStudent(std, teacher, lesson));
 
     }
